@@ -1,0 +1,162 @@
+const express = require("express");
+const path = require("path");
+const knex = require("knex")({
+    client: "pg",
+    connection: {
+        host: process.env.RDS_HOSTNAME || "localhost",
+        user: process.env.RDS_USERNAME || "postgres",
+        password: process.env.RDS_PASSWORD || "",
+        database: process.env.RDS_DB_NAME || "turtleshelter",
+        port: process.env.RDS_PORT || 5432,
+        ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false,
+    },
+});
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Set up view engine and static file serving
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "css")));
+app.use("/images", express.static(path.join(__dirname, "images")));
+app.use(express.urlencoded({ extended: true }));
+
+// Routes
+app.get("/", (req, res) => {
+    res.render("index");
+});
+
+app.get("/login", (req, res) => {
+    res.render("login");
+});
+
+app.get("/maprating", async (req, res) => {
+    try {
+        const locations = await knex("location").select(
+            "entryid",
+            "city",
+            "state",
+            "danger_score",
+            "food_score",
+            "transportation_score",
+            "ent_score",
+            "accountid"
+        );
+        console.log("Query Result:", locations);
+        res.render("maprating", { locations });
+    } catch (error) {
+        console.error("Here is the error:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const user = await knex("user")
+            .select("*")
+            .where({ username, password }) // Replace with hashed password in production
+            .first();
+        if (user) {
+            console.log("Login successful:", user);
+        } else {
+            console.log("Invalid credentials");
+        }
+    } catch (error) {
+        console.error("Database query failed:", error.message);
+        res.status(500).send("Database query failed: " + error.message);
+    }
+    res.redirect("/");
+});
+
+// Serve editEvent form
+app.get("/editEvent/:id?", async (req, res) => {
+    const eventId = req.params.id;
+    try {
+        if (eventId) {
+            // Fetch event data for editing
+            const event = await knex("event_info").where({ event_id: eventId }).first();
+            if (event) {
+                res.render("editEvent", { event });
+            } else {
+                res.status(404).send("Event not found");
+            }
+        } else {
+            // Render form for adding a new event
+            res.render("editEvent", { event: null });
+        }
+    } catch (error) {
+        console.error("Error fetching event data:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+// Handle form submission for editing/creating an event
+app.post("/editEvent", async (req, res) => {
+    const {
+        event_Id, // Included for updates
+        city,
+        address,
+        event_Date,
+        event_Start_Time,
+        organizer_Id,
+        event_Duration,
+        event_Description,
+        pockets,
+        collars,
+        envelopes,
+        vests,
+        completed_Products,
+    } = req.body;
+
+    try {
+        if (event_Id) {
+            // Update existing event
+            await knex("event_info")
+                .where({ event_id: event_Id })
+                .update({
+                    city,
+                    address,
+                    event_date: event_Date,
+                    event_start_time: event_Start_Time,
+                    organizer_id: organizer_Id,
+                    event_duration: event_Duration,
+                    event_description: event_Description,
+                    pockets,
+                    collars,
+                    envelopes,
+                    vests,
+                    completed_products: completed_Products,
+                });
+            console.log("Event updated:", event_Id);
+        } else {
+            // Insert new event
+            await knex("event_info").insert({
+                city,
+                address,
+                event_date: event_Date,
+                event_start_time: event_Start_Time,
+                organizer_id: organizer_Id,
+                event_duration: event_Duration,
+                event_description: event_Description,
+                pockets,
+                collars,
+                envelopes,
+                vests,
+                completed_products: completed_Products,
+            });
+            console.log("New event added");
+        }
+
+        res.redirect("/"); // Redirect to a confirmation or listing page
+    } catch (error) {
+        console.error("Error saving event data:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+// Start the server
+app.listen(port, () =>
+    console.log(`Express App has started and server is listening on port ${port}!`)
+);

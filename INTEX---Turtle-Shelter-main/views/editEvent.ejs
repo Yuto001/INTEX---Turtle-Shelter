@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/editEvent" method="POST">
+        <!-- Include hidden input for event ID if editing an existing event -->
+        <% if (event) { %>
+            <input type="hidden" name="event_Id" value="<%= event.event_id %>">
+        <% } %>
+    
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" value="<%= event ? event.city : '' %>" required>
+        
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" value="<%= event ? event.address : '' %>" required>
+        
+        <label for="event_Date">Date:</label>
+        <input type="date" id="event_Date" name="event_Date" value="<%= event ? event.event_date.toISOString().split('T')[0] : '' %>" required>
+        
+        <label for="event_Start_Time">Start Time:</label>
+        <input type="time" id="event_Start_Time" name="event_Start_Time" value="<%= event ? event.event_start_time : '' %>" required>
+    
+        <label for="organizer_Id">Organizer ID:</label>
+        <input type="number" id="organizer_Id" name="organizer_Id" value="<%= event ? event.organizer_id : '' %>" required>
+    
+        <label for="event_Duration">Event Duration:</label>
+        <input type="number" id="event_Duration" name="event_Duration" value="<%= event ? event.event_duration : '' %>" required>
+    
+        <label for="event_Description">Description:</label>
+        <input type="text" id="event_Description" name="event_Description" value="<%= event ? event.event_description : '' %>" required>
+    
+        <label for="pockets">Number of Pockets Made:</label>
+        <input type="number" id="pockets" name="pockets" value="<%= event ? event.pockets : '' %>" required>
+    
+        <label for="collars">Number of Collars Made:</label>
+        <input type="number" id="collars" name="collars" value="<%= event ? event.collars : '' %>" required>
+    
+        <label for="envelopes">Number of Envelopes Made:</label>
+        <input type="number" id="envelopes" name="envelopes" value="<%= event ? event.envelopes : '' %>" required>
+    
+        <label for="vests">Number of Vests Made:</label>
+        <input type="number" id="vests" name="vests" value="<%= event ? event.vests : '' %>" required>
+        
+        <label for="completed_Products">Completed Products:</label>
+        <input type="number" id="completed_Products" name="completed_Products" value="<%= event ? event.completed_products : '' %>" required>
+        
+        <button type="submit"><%= event ? 'Update Event' : 'Add Event' %></button>
+    </form>
+    
+      
+</body>
+</html>
