@@ -235,8 +235,28 @@ https://templatemo.com/tm-581-kind-heart-charity
                     <div class="row">
 
                         <div class="col-lg-6 col-12 mb-5 mb-lg-0">
-                            <img src="images/TurtleShelterProjectPhoto1.jpg" class="custom-text-box-image img-fluid" alt="">
+                            <div id="simpleCarousel" style="position: relative; overflow: hidden;">
+                                <img src="images/TurtleShelterProjectPhoto1.jpg" class="custom-text-box-image img-fluid" alt="" style="display: block;">
+                                <img src="images/TurtleShelterProjectPhoto2.jpg" class="custom-text-box-image img-fluid" alt="" style="display: none;">
+                                <img src="images/TurtleShelterProjectPhoto3.jpg" class="custom-text-box-image img-fluid" alt="" style="display: none;">
+                            </div>
                         </div>
+                        
+                        <script>
+                            // JavaScript to auto-change images
+                            const images = document.querySelectorAll('#simpleCarousel .custom-text-box-image');
+                            let currentIndex = 0;
+                        
+                            setInterval(() => {
+                                images[currentIndex].style.display = 'none'; // Hide current image
+                                currentIndex = (currentIndex + 1) % images.length; // Move to next index
+                                images[currentIndex].style.display = 'block'; // Show next image
+                            }, 5000); // Change every 5 seconds
+                        </script>
+                        
+
+
+
 
                         <div class="col-lg-6 col-12">
                             <div class="custom-text-box">
