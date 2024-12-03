@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Dashboard</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 2px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        button.delete {
+            background-color: #dc3545;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Volunteer Dashboard</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Volunteer ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Hours Available</th>
+                <th>Sewing Skill</th>
+                <th>Vir ID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% volunteers.forEach(volunteer => { %>
+                <tr>
+                    <td><%= volunteer.volunteer_ID %></td>
+                    <td><%= volunteer.volunteer_Fname %></td>
+                    <td><%= volunteer.volunteer_Lname %></td>
+                    <td><%= volunteer.volunteer_Email %></td>
+                    <td><%= volunteer.volunteer_Phone %></td>
+                    <td><%= volunteer.hours_Available %></td>
+                    <td><%= volunteer.sewing_Skill %></td>
+                    <td><%= volunteer.vir_Id %></td>
+                    <td>
+                        <!-- View Button -->
+                        <a href="/viewVolun/<%= volunteer.volunteer_ID %>">
+                            <button>View</button>
+                        </a>
+
+                        <!-- Edit Button -->
+                        <a href="/editVolun/<%= volunteer.volunteer_ID %>">
+                            <button>Edit</button>
+                        </a>
+
+                        <!-- Delete Button -->
+                        <form action="/deleteVolun/<%= volunteer.volunteer_ID %>" method="POST" style="display: inline;" onsubmit="return confirmDelete();">
+                            <button type="submit" class="delete">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <!-- Add Volunteer Button -->
+    <a href="/addVolun" style="margin-top: 20px; display: inline-block;">
+        <button>Add Volunteer</button>
+    </a>
+
+    <!-- Confirmation script for delete -->
+    <script>
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete this volunteer? This action cannot be undone.");
+        }
+    </script>
+</body>
+</html>

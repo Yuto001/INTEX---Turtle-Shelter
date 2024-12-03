@@ -138,10 +138,6 @@ app.get('/news', (req, res) => {
     res.render('news');
 });
 
-app.get('/adminLanding', (req, res) => {
-    res.render('adminLanding');
-});
-
 
 app.get("/dashboard_event_history", async (req, res) => {
     try {
@@ -401,6 +397,160 @@ app.post("/editOrganizer", async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
+app.get("/addVolun", (req, res) => {
+    res.render("addVolun");
+});
+
+app.post("/addVolun", async (req, res) => {
+    const {
+
+        volunteer_Email,
+        volunteer_Fname,
+        volunteer_Lname,
+        volunteer_Phone,
+        hours_Available,
+        sewing_Skill,
+        vir_Id
+    } = req.body;
+
+    try {
+        // Insert the new volunteer into the database
+        await knex("volunteer_info").insert({
+            volunteer_Email,
+            volunteer_Fname,
+            volunteer_Lname,
+            volunteer_Phone,
+            hours_Available,
+            sewing_Skill,
+            vir_Id
+        });
+
+        console.log("Volunteer added:", {
+            volunteer_Email,
+            volunteer_Fname,
+            volunteer_Lname,
+            volunteer_Phone,
+            hours_Available,
+            sewing_Skill,
+            vir_Id
+        });
+
+        res.redirect("/dashboard_volunteers"); // Redirect to the dashboard or another page
+    } catch (error) {
+        console.error("Error adding volunteer:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.get("/dashboard_volunteers", async (req, res) => {
+    try {
+        // Fetch all volunteers from the database
+        const volunteers = await knex("volunteer_info").select(
+            "volunteer_ID",
+            "volunteer_Email",
+            "volunteer_Fname",
+            "volunteer_Lname",
+            "volunteer_Phone",
+            "hours_Available",
+            "sewing_Skill",
+            "vir_Id"
+        );
+
+        // Render the dashboard view with volunteers data
+        res.render("dashboard_volunteers", { volunteers });
+    } catch (error) {
+        console.error("Error fetching volunteers:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.get("/viewVolun/:id", async (req, res) => {
+    const volunteerId = req.params.id;
+    try {
+        const volunteer = await knex("volunteer_info").where({ volunteer_ID: volunteerId }).first();
+        if (!volunteer) {
+            return res.status(404).send("Volunteer not found");
+        }
+        res.render("viewVolun", { volunteer }); // You'll need to create the viewVolun.ejs page
+    } catch (error) {
+        console.error("Error fetching volunteer:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+
+app.get("/editVolun/:id", async (req, res) => {
+    const volunteerId = req.params.id;
+    try {
+        const volunteer = await knex("volunteer_info").where({ volunteer_ID: volunteerId }).first();
+        if (!volunteer) {
+            return res.status(404).send("Volunteer not found");
+        }
+        res.render("editVolun", { volunteer }); // Create the editVolun.ejs page for editing
+    } catch (error) {
+        console.error("Error fetching volunteer:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+
+app.post("/deleteVolun/:id", async (req, res) => {
+    const volunteerId = req.params.id;
+    try {
+        await knex("volunteer_info").where({ volunteer_ID: volunteerId }).del();
+        console.log(`Volunteer with ID ${volunteerId} deleted`);
+        res.redirect("/dashboard_volunteers");
+    } catch (error) {
+        console.error("Error deleting volunteer:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.post("/editVolun", async (req, res) => {
+    const {
+        volunteer_ID,
+        volunteer_Email,
+        volunteer_Fname,
+        volunteer_Lname,
+        volunteer_Phone,
+        hours_Available,
+        sewing_Skill,
+        vir_Id
+    } = req.body;
+
+    try {
+        // Update the volunteer details in the database
+        await knex("volunteer_info")
+            .where({ volunteer_ID })
+            .update({
+                volunteer_Email,
+                volunteer_Fname,
+                volunteer_Lname,
+                volunteer_Phone,
+                hours_Available,
+                sewing_Skill,
+                vir_Id
+            });
+
+        console.log("Volunteer updated:", {
+            volunteer_ID,
+            volunteer_Email,
+            volunteer_Fname,
+            volunteer_Lname,
+            volunteer_Phone,
+            hours_Available,
+            sewing_Skill,
+            vir_Id
+        });
+
+        res.redirect("/dashboard_volunteers"); // Redirect to the dashboard or another page
+    } catch (error) {
+        console.error("Error updating volunteer:", error);
+        res.status(500).send("Server error");
+    }
+});
+
 
 
 // Start the server
