@@ -40,6 +40,11 @@ app.get("/events", (req, res) => {
     res.render("events");
 });
 
+// for admin dashboard page
+app.get("/adminDashboard", (req, res) => {
+    res.render("adminDashboard");
+});
+
 // this is for login function
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
