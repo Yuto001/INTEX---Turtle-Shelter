@@ -551,6 +551,9 @@ app.post("/editVolun", async (req, res) => {
     }
 });
 
+app.get("/adminLanding", (req, res) => {
+    res.render("adminLanding");
+});
 
 
 // Start the server
