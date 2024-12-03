@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    res.render("login");
+    res.render("logIn"); //changed from login to logIn if this will affect
 });
 
 app.get("/adminDashboard", (req, res) => {
