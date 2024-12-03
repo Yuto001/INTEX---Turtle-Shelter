@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Dashboard</title>
+</head>
+<body>
+    <h1>Event History</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Event ID</th>
+                <th>City</th>
+                <th>Address</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>Description</th>
+                <th>Pockets</th>
+                <th>Collars</th>
+                <th>Envelopes</th>
+                <th>Vests</th>
+                <th>Completed Products</th>
+                <th>Organizer</th> <!-- New Column -->
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% events.forEach(event => { %>
+                <tr>
+                    <td><%= event.event_ID %></td>
+                    <td><%= event.city %></td>
+                    <td><%= event.address %></td>
+                    <td>
+                        <% if (event.event_Date) { %>
+                            <%= new Date(event.event_Date).toISOString().split('T')[0] %>
+                        <% } else { %>
+                            N/A
+                        <% } %>
+                    </td>
+                    <td><%= event.event_Start_Time %></td>
+                    <td><%= event.event_Description %></td>
+                    <td><%= event.pockets %></td>
+                    <td><%= event.collars %></td>
+                    <td><%= event.envelopes %></td>
+                    <td><%= event.vests %></td>
+                    <td><%= event.completed_Products %></td>
+                    <td>
+                        <% if (event.organizer_Email) { %>
+                            <%= event.organizer_Email %>
+                        <% } else { %>
+                            <%= event.organizer_Id %>
+                        <% } %>
+                    </td> <!-- Display Organizer ID -->
+                    <td>
+                        <a href="/editEvent/<%= event.event_ID %>">Edit</a>
+                        <form action="/deleteEvent/<%= event.event_ID %>" method="POST" style="display: inline;" onsubmit="return confirmDelete();">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <!-- Add Event Button -->
+    <a href="/addEvent" style="margin-top: 20px; display: inline-block;">
+        <button>Add Event</button>
+    </a>
+</body>
+</html>
+

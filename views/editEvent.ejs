@@ -9,48 +9,57 @@
     <form action="/editEvent" method="POST">
         <!-- Include hidden input for event ID if editing an existing event -->
         <% if (event) { %>
-            <input type="hidden" name="event_Id" value="<%= event.event_id %>">
+            <input type="hidden" name="event_Id" value="<%= event.event_ID %>">
         <% } %>
     
         <label for="city">City:</label>
         <input type="text" id="city" name="city" value="<%= event ? event.city : '' %>" required>
-        
+        <br><br>
         <label for="address">Address:</label>
         <input type="text" id="address" name="address" value="<%= event ? event.address : '' %>" required>
-        
+        <br><br>
         <label for="event_Date">Date:</label>
-        <input type="date" id="event_Date" name="event_Date" value="<%= event ? event.event_date.toISOString().split('T')[0] : '' %>" required>
-        
+        <input type="date" id="event_Date" name="event_Date" value="<%= event ? event.event_Date.toISOString().split('T')[0] : '' %>" required>
+        <br><br>
         <label for="event_Start_Time">Start Time:</label>
-        <input type="time" id="event_Start_Time" name="event_Start_Time" value="<%= event ? event.event_start_time : '' %>" required>
-    
-        <label for="organizer_Id">Organizer ID:</label>
-        <input type="number" id="organizer_Id" name="organizer_Id" value="<%= event ? event.organizer_id : '' %>" required>
-    
+        <input type="time" id="event_Start_Time" name="event_Start_Time" value="<%= event ? event.event_Start_Time : '' %>" required>
+        <br><br>
+        <label for="organizer_ID">Organizer:</label>
+        <select id="organizer_ID" name="organizer_ID"  required>
+            <% organizers.forEach(organizer => { %>
+                <option value="<%= organizer.organizer_ID %>" 
+                    <%= event && event.organizer_ID === organizer.organizer_ID ? 'selected' : '' %>>
+                    <%= organizer.organizer_Email %>
+                </option>
+            <% }) %>
+        </select>
+        <br><br>
         <label for="event_Duration">Event Duration:</label>
-        <input type="number" id="event_Duration" name="event_Duration" value="<%= event ? event.event_duration : '' %>" required>
-    
+        <input type="number" id="event_Duration" name="event_Duration" value="<%= event ? event.event_Duration : '' %>" required>
+        <br><br>
         <label for="event_Description">Description:</label>
-        <input type="text" id="event_Description" name="event_Description" value="<%= event ? event.event_description : '' %>" required>
-    
+        <input type="text" id="event_Description" name="event_Description" value="<%= event ? event.event_Description : '' %>" required>
+        <br><br>
         <label for="pockets">Number of Pockets Made:</label>
         <input type="number" id="pockets" name="pockets" value="<%= event ? event.pockets : '' %>" required>
-    
+        <br><br>
         <label for="collars">Number of Collars Made:</label>
         <input type="number" id="collars" name="collars" value="<%= event ? event.collars : '' %>" required>
-    
+        <br><br>
         <label for="envelopes">Number of Envelopes Made:</label>
         <input type="number" id="envelopes" name="envelopes" value="<%= event ? event.envelopes : '' %>" required>
-    
+        <br><br>
         <label for="vests">Number of Vests Made:</label>
         <input type="number" id="vests" name="vests" value="<%= event ? event.vests : '' %>" required>
-        
+        <br><br>
         <label for="completed_Products">Completed Products:</label>
-        <input type="number" id="completed_Products" name="completed_Products" value="<%= event ? event.completed_products : '' %>" required>
-        
+        <input type="number" id="completed_Products" name="completed_Products" value="<%= event ? event.completed_Products : '' %>" required>
+        <br><br>
         <button type="submit"><%= event ? 'Update Event' : 'Add Event' %></button>
     </form>
-    
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
       
 </body>
 </html>

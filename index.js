@@ -32,9 +32,16 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
-// for admin dashboard page
 app.get("/adminDashboard", (req, res) => {
     res.render("adminDashboard");
+});
+
+app.get('/events', (req, res) => {
+    res.render('events');
+});
+
+app.get('/viewVolun', (req, res) => {
+    res.render('viewVolun');
 });
 
 // this is for login function
@@ -134,29 +141,32 @@ app.get('/news', (req, res) => {
 
 app.get("/dashboard_event_history", async (req, res) => {
     try {
-        // Fetch all events from the event_info table
-        const events = await knex("event_info").select(
-            "event_ID",
-            "city",
-            "address",
-            "event_Date",
-            "organizer_Id",
-            "event_Start_Time",
-            "event_Description",
-            "pockets",
-            "collars",
-            "envelopes",
-            "vests",
-            "completed_Products"
-        );
+        const events = await knex("event_info")
+            .leftJoin("organizer_info", "event_info.organizer_Id", "organizer_info.organizer_ID")
+            .select(
+                "event_info.event_ID",
+                "event_info.city",
+                "event_info.address",
+                "event_info.event_Date",
+                "event_info.event_Start_Time",
+                "event_info.event_Description",
+                "event_info.pockets",
+                "event_info.collars",
+                "event_info.envelopes",
+                "event_info.vests",
+                "event_info.completed_Products",
+                "event_info.organizer_Id",
+                "organizer_info.organizer_Email" // Include organizer email
+            );
 
-        // Render the view with the fetched events
+        // Pass events to the view
         res.render("dashboard_event_history", { events });
     } catch (error) {
         console.error("Error fetching events:", error);
         res.status(500).send("Server error");
     }
 });
+
 
 // Route to delete an event
 app.post("/deleteEvent/:id", async (req, res) => {
@@ -219,22 +229,21 @@ app.post('/addEvent', async (req, res) => {
 
 // Serve editEvent form
 app.get("/editEvent/:id?", async (req, res) => {
-    const eventID = req.params.id;
+    const eventId = req.params.id;
+
     try {
-        if (eventID) {
-            // Fetch event data for editing
-            const event = await knex("event_info").where({ event_ID: eventID }).first();
-            if (event) {
-                res.render("editEvent", { event });
-            } else {
-                res.status(404).send("Event not found");
-            }
-        } else {
-            // Render form for adding a new event
-            res.render("editEvent", { event: null });
+        // Fetch the event details if editing
+        let event = null;
+        if (eventId) {
+            event = await knex("event_info").where({ event_ID: eventId }).first();
         }
+
+        // Fetch all organizers to populate the dropdown
+        const organizers = await knex("organizer_info").select("organizer_ID", "organizer_Email");
+
+        res.render("editEvent", { event, organizers });
     } catch (error) {
-        console.error("Error fetching event data:", error);
+        console.error("Error fetching event or organizers:", error);
         res.status(500).send("Server error");
     }
 });
@@ -286,19 +295,114 @@ app.post("/editEvent", async (req, res) => {
     }
 });
 
-// GET Route to render the events.ejs form
-app.get('/events', (req, res) => {
-    res.render('events');
+
+app.get("/dashboard_organizers", async (req, res) => {
+    try {
+        // Fetch all organizers from the database
+        const organizers = await knex("organizer_info").select(
+            "organizer_ID",
+            "organizer_First",
+            "organizer_Last",
+            "organizer_Email",
+            "organizer_Phone"
+        );
+
+        // Render the dashboard with organizers data
+        res.render("dashboard_organizers", { organizers });
+    } catch (error) {
+        console.error("Error fetching organizers:", error);
+        res.status(500).send("Server error");
+    }
 });
 
-// GET Route to render the viewVolun.ejs form
-app.get('/viewVolun', (req, res) => {
-    res.render('viewVolun');
+
+app.get("/addOrganizer", (req, res) => {
+    res.render("addOrganizer");
 });
 
+app.post("/addOrganizer", async (req, res) => {
+    const { organizer_ID, organizer_Email, organizer_First, organizer_Last, organizer_Phone } = req.body;
+
+    try {
+        // Insert the new organizer into the database
+        await knex("organizer_info").insert({
+            organizer_Email,
+            organizer_First,
+            organizer_Last,
+            organizer_Phone,
+        });
+
+        console.log("Organizer added:", {
+            organizer_Email,
+            organizer_First,
+            organizer_Last,
+            organizer_Phone,
+        });
+
+        res.redirect("/dashboard_organizers"); // Redirect to the dashboard or another page
+    } catch (error) {
+        console.error("Error adding organizer:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+
+app.get("/editOrganizer/:id", async (req, res) => {
+    const organizerId = req.params.id;
+
+    try {
+        // Fetch the organizer's details from the database
+        const organizer = await knex("organizer_info")
+            .where({ organizer_ID: organizerId })
+            .first();
+
+        if (!organizer) {
+            return res.status(404).send("Organizer not found");
+        }
+
+        // Render the editOrganizer page with the organizer data
+        res.render("editOrganizer", { organizer });
+    } catch (error) {
+        console.error("Error fetching organizer:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.post("/editOrganizer", async (req, res) => {
+    const { organizer_ID, organizer_First, organizer_Last, organizer_Email, organizer_Phone } = req.body;
+
+    try {
+        // Update the organizer in the database
+        await knex("organizer_info")
+            .where({ organizer_ID })
+            .update({
+                organizer_First,
+                organizer_Last,
+                organizer_Email,
+                organizer_Phone,
+            });
+
+        console.log("Organizer updated:", {
+            organizer_ID,
+            organizer_First,
+            organizer_Last,
+            organizer_Email,
+            organizer_Phone,
+        });
+
+        // Redirect back to the dashboard
+        res.redirect("/dashboard_organizers");
+    } catch (error) {
+        console.error("Error updating organizer:", error);
+        res.status(500).send("Server error");
+    }
+});
 
 
 // Start the server
+
+
 app.listen(port, () =>
+    
     console.log(`Express App has started and server is listening on port ${port}!`)
 );
