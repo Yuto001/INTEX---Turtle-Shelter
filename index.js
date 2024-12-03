@@ -555,6 +555,10 @@ app.get("/adminLanding", (req, res) => {
     res.render("adminLanding");
 });
 
+app.get('/jensStory', (req, res) => {
+    res.render('jensStory', { title: "Jen's Story - Turtle Shelter Project" });
+});
+
 
 // Start the server
 
