@@ -27,9 +27,13 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
     res.render("index");
 });
-
+//this is for login page
 app.get("/login", (req, res) => {
     res.render("login");
+});
+// for admin landing page
+app.get("/adminLanding", (req, res) => {
+    res.render("adminLanding");
 });
 
 // this is for login function
