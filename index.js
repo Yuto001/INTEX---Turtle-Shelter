@@ -27,17 +27,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
     res.render("index");
 });
-//this is for login page
+
 app.get("/login", (req, res) => {
     res.render("login");
-});
-// for admin landing page
-app.get("/adminLanding", (req, res) => {
-    res.render("adminLanding");
-});
-// for event list
-app.get("/events", (req, res) => {
-    res.render("events");
 });
 
 // for admin dashboard page
@@ -140,6 +132,46 @@ app.get('/news', (req, res) => {
 });
 
 
+app.get("/dashboard_event_history", async (req, res) => {
+    try {
+        // Fetch all events from the event_info table
+        const events = await knex("event_info").select(
+            "event_ID",
+            "city",
+            "address",
+            "event_Date",
+            "organizer_Id",
+            "event_Start_Time",
+            "event_Description",
+            "pockets",
+            "collars",
+            "envelopes",
+            "vests",
+            "completed_Products"
+        );
+
+        // Render the view with the fetched events
+        res.render("dashboard_event_history", { events });
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+// Route to delete an event
+app.post("/deleteEvent/:id", async (req, res) => {
+    const eventID = req.params.id;
+    try {
+        await knex("event_info").where({ event_ID: eventID }).del();
+        console.log("Event deleted:", eventID);
+        res.redirect("/dashboard_event_history");
+    } catch (error) {
+        console.error("Error deleting event:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+
 
 // GET Route to render the addEvent.ejs form
 app.get('/addEvent', (req, res) => {
@@ -187,11 +219,11 @@ app.post('/addEvent', async (req, res) => {
 
 // Serve editEvent form
 app.get("/editEvent/:id?", async (req, res) => {
-    const eventId = req.params.id;
+    const eventID = req.params.id;
     try {
-        if (eventId) {
+        if (eventID) {
             // Fetch event data for editing
-            const event = await knex("event_info").where({ event_id: eventId }).first();
+            const event = await knex("event_info").where({ event_ID: eventID }).first();
             if (event) {
                 res.render("editEvent", { event });
             } else {
@@ -210,7 +242,7 @@ app.get("/editEvent/:id?", async (req, res) => {
 // Handle form submission for editing/creating an event
 app.post("/editEvent", async (req, res) => {
     const {
-        event_Id, // Included for updates
+        event_ID, // Included for updates
         city,
         address,
         event_Date,
@@ -226,60 +258,36 @@ app.post("/editEvent", async (req, res) => {
     } = req.body;
 
     try {
-        if (event_Id) {
+        if (event_ID) {
             // Update existing event
             await knex("event_info")
-                .where({ event_id: event_Id })
+                .where({ event_ID: event_ID })
                 .update({
                     city,
                     address,
-                    event_date: event_Date,
-                    event_start_time: event_Start_Time,
-                    organizer_id: organizer_Id,
-                    event_duration: event_Duration,
-                    event_description: event_Description,
+                    event_Date: event_Date,
+                    event_Start_Time: event_Start_Time,
+                    organizer_Id: organizer_Id,
+                    event_Duration: event_Duration,
+                    event_Description: event_Description,
                     pockets,
                     collars,
                     envelopes,
                     vests,
-                    completed_products: completed_Products,
+                    completed_Products: completed_Products,
                 });
-            console.log("Event updated:", event_Id);
-        } else {
-            // Insert new event
-            await knex("event_info").insert({
-                city,
-                address,
-                event_date: event_Date,
-                event_start_time: event_Start_Time,
-                organizer_id: organizer_Id,
-                event_duration: event_Duration,
-                event_description: event_Description,
-                pockets,
-                collars,
-                envelopes,
-                vests,
-                completed_products: completed_Products,
-            });
-            console.log("New event added");
-        }
+            console.log("Event updated:", event_ID);
+        } 
 
-        res.redirect("/"); // Redirect to a confirmation or listing page
+        res.redirect("/dashboard_event_history"); // Redirect to a confirmation or listing page
     } catch (error) {
         console.error("Error saving event data:", error);
         res.status(500).send("Server error");
     }
 });
 
-app.get('/viewVolun', (req, res) => {
-    res.render('viewVolun');
-});
-
-
-
-
-
 // Start the server
+
 app.listen(port, () =>
     console.log(`Express App has started and server is listening on port ${port}!`)
 );
