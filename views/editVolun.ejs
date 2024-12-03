@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Volunteer</title>
+</head>
+<body>
+    <h1>Edit Volunteer</h1>
+
+    <form action="/editVolun" method="POST">
+        <!-- Volunteer ID (Hidden Field) -->
+        <input type="hidden" name="volunteer_ID" value="<%= volunteer.volunteer_ID %>">
+
+        <label for="volunteer_Email">Email:</label>
+        <input type="email" id="volunteer_Email" name="volunteer_Email" value="<%= volunteer.volunteer_Email %>" required>
+        <br><br>
+
+        <label for="volunteer_Fname">First Name:</label>
+        <input type="text" id="volunteer_Fname" name="volunteer_Fname" value="<%= volunteer.volunteer_Fname %>" required>
+        <br><br>
+
+        <label for="volunteer_Lname">Last Name:</label>
+        <input type="text" id="volunteer_Lname" name="volunteer_Lname" value="<%= volunteer.volunteer_Lname %>" required>
+        <br><br>
+
+        <label for="volunteer_Phone">Phone:</label>
+        <input type="tel" id="volunteer_Phone" name="volunteer_Phone" value="<%= volunteer.volunteer_Phone %>" required>
+        <br><br>
+
+        <label for="hours_Available">Hours Available:</label>
+        <input type="number" id="hours_Available" name="hours_Available" value="<%= volunteer.hours_Available %>" required>
+        <br><br>
+
+        <label for="sewing_Skill">Sewing Skill:</label>
+        <select id="sewing_Skill" name="sewing_Skill" required>
+            <option value="1" <%= volunteer.sewing_Skill === 'Beginner' ? 'selected' : '' %>>Beginner</option>
+            <option value="2" <%= volunteer.sewing_Skill === 'Intermediate' ? 'selected' : '' %>>Intermediate</option>
+            <option value="3" <%= volunteer.sewing_Skill === 'Advanced' ? 'selected' : '' %>>Advanced</option>
+        </select>
+        <br><br>
+
+        <label for="vir_Id"> Info Resource:</label>
+        <input type="number" id="vir_Id" name="vir_Id" value="<%= volunteer.vir_Id %>" required>
+        <br><br>
+
+        <button type="submit">Update Volunteer</button>
+    </form>
+</body>
+</html>
