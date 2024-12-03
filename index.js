@@ -5,8 +5,8 @@ const knex = require("knex")({
     connection: {
         host: process.env.RDS_HOSTNAME || "localhost",
         user: process.env.RDS_USERNAME || "postgres",
-        password: process.env.RDS_PASSWORD || "",
-        database: process.env.RDS_DB_NAME || "dbdb", // Updated database name for the intex
+        password: process.env.RDS_PASSWORD || "password",
+        database: process.env.RDS_DB_NAME || "turtleshelter", // Updated database name for the intex
         port: process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false,
     },
@@ -27,9 +27,17 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
     res.render("index");
 });
-
+//this is for login page
 app.get("/login", (req, res) => {
     res.render("login");
+});
+// for admin landing page
+app.get("/adminLanding", (req, res) => {
+    res.render("adminLanding");
+});
+// for event list
+app.get("/events", (req, res) => {
+    res.render("events");
 });
 
 // this is for login function
