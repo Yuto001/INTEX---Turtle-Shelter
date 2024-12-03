@@ -70,6 +70,17 @@ app.post("/login", async (req, res) => {
     res.redirect("/");
 });
 
+
+// Serve static files from the "public" directory
+app.use(express.static('public'));
+
+// Set the view engine to EJS
+app.set('view engine', 'ejs');
+
+app.get('/', (req, res) => {
+    res.render('index'); // Renders index.ejs
+});
+
 app.listen(port, () =>
     console.log(`Express App has started and server is listening on port ${port}!`)
 );
