@@ -31,6 +31,37 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
+// this is for login function
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    knex('loginuser') // Replace with your table name
+        .select('username', 'password') // Include email in the query if necessary
+        .where({ username }) // Check both username and email
+        .first()
+        .then(user => {
+            if (user && user.password === password) {
+                // User found and password matches
+                
+                res.redirect('/adminDashboard'); // Redirect to /adminDahsboard
+            } else {
+                res.send('Invalid username or password');
+            }
+        })
+        .catch(error => {
+            console.error('Error during login:', error);
+            res.status(500).send('Server error');
+        });
+});
+
+// Route to test protected access (after login)
+app.get('/protected', (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).send("Unauthorized");
+    }
+    res.send("Welcome to the protected route!");
+});
+
 app.get("/maprating", async (req, res) => {
     try {
         const locations = await knex("location").select(
