@@ -71,14 +71,27 @@ app.post("/login", async (req, res) => {
 });
 
 
-// Serve static files from the "public" directory
-app.use(express.static('public'));
-
 // Set the view engine to EJS
 app.set('view engine', 'ejs');
 
+// Serve static files from the public folder
+app.use(express.static('public'));
+
+// Routes
 app.get('/', (req, res) => {
-    res.render('index'); // Renders index.ejs
+    res.render('index');
+});
+
+app.get('/donate', (req, res) => {
+    res.render('donate');
+});
+
+app.get('/news-detail', (req, res) => {
+    res.render('news-detail');
+});
+
+app.get('/news', (req, res) => {
+    res.render('news');
 });
 
 app.listen(port, () =>
