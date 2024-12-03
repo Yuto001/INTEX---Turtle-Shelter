@@ -5,8 +5,8 @@ const knex = require("knex")({
     connection: {
         host: process.env.RDS_HOSTNAME || "localhost",
         user: process.env.RDS_USERNAME || "postgres",
-        password: process.env.RDS_PASSWORD || "password",
-        database: process.env.RDS_DB_NAME || "turtleshelter",
+        password: process.env.RDS_PASSWORD || "",
+        database: process.env.RDS_DB_NAME || "dbdb", // Updated database name for the intex
         port: process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false,
     },
@@ -31,6 +31,37 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
+// this is for login function
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    knex('loginuser') // Replace with your table name
+        .select('username', 'password') // Include email in the query if necessary
+        .where({ username }) // Check both username and email
+        .first()
+        .then(user => {
+            if (user && user.password === password) {
+                // User found and password matches
+                
+                res.redirect('/adminDashboard'); // Redirect to /adminDahsboard
+            } else {
+                res.send('Invalid username or password');
+            }
+        })
+        .catch(error => {
+            console.error('Error during login:', error);
+            res.status(500).send('Server error');
+        });
+});
+
+// Route to test protected access (after login)
+app.get('/protected', (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).send("Unauthorized");
+    }
+    res.send("Welcome to the protected route!");
+});
+
 app.get("/maprating", async (req, res) => {
     try {
         const locations = await knex("location").select(
@@ -43,8 +74,8 @@ app.get("/maprating", async (req, res) => {
             "ent_score",
             "accountid"
         );
-        console.log("Query Result:", locations);
-        res.render("maprating", { locations });
+        console.log("Query Result:", locations); // Debugging log
+        res.render("maprating", { locations }); // Pass data as "locations"
     } catch (error) {
         console.error("Here is the error:", error);
         res.status(500).send("Server error");
@@ -68,6 +99,30 @@ app.post("/login", async (req, res) => {
         res.status(500).send("Database query failed: " + error.message);
     }
     res.redirect("/");
+});
+
+
+// Set the view engine to EJS
+app.set('view engine', 'ejs');
+
+// Serve static files from the public folder
+app.use(express.static('public'));
+
+// Routes
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+app.get('/donate', (req, res) => {
+    res.render('donate');
+});
+
+app.get('/news-detail', (req, res) => {
+    res.render('news-detail');
+});
+
+app.get('/news', (req, res) => {
+    res.render('news');
 });
 
 // GET Route to render the addEvent.ejs form
@@ -201,6 +256,10 @@ app.post("/editEvent", async (req, res) => {
 });
 
 // Start the server
+
+
 app.listen(port, () =>
     console.log(`Express App has started and server is listening on port ${port}!`)
 );
+
+
