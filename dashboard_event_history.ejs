@@ -22,7 +22,7 @@
                 <th>Envelopes</th>
                 <th>Vests</th>
                 <th>Completed Products</th>
-                <th>Organizer ID</th> <!-- New Column -->
+                <th>Organizer</th> <!-- New Column -->
                 <th>Actions</th>
             </tr>
         </thead>
@@ -46,7 +46,13 @@
                     <td><%= event.envelopes %></td>
                     <td><%= event.vests %></td>
                     <td><%= event.completed_Products %></td>
-                    <td><%= event.organizer_Id %></td> <!-- Display Organizer ID -->
+                    <td>
+                        <% if (event.organizer_Email) { %>
+                            <%= event.organizer_Email %>
+                        <% } else { %>
+                            <%= event.organizer_Id %>
+                        <% } %>
+                    </td> <!-- Display Organizer ID -->
                     <td>
                         <a href="/editEvent/<%= event.event_ID %>">Edit</a>
                         <form action="/deleteEvent/<%= event.event_ID %>" method="POST" style="display: inline;" onsubmit="return confirmDelete();">
