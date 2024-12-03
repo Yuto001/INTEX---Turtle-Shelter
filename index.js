@@ -286,8 +286,19 @@ app.post("/editEvent", async (req, res) => {
     }
 });
 
-// Start the server
+// GET Route to render the events.ejs form
+app.get('/events', (req, res) => {
+    res.render('events');
+});
 
+// GET Route to render the viewVolun.ejs form
+app.get('/viewVolun', (req, res) => {
+    res.render('viewVolun');
+});
+
+
+
+// Start the server
 app.listen(port, () =>
     console.log(`Express App has started and server is listening on port ${port}!`)
 );
