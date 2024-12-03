@@ -138,6 +138,10 @@ app.get('/news', (req, res) => {
     res.render('news');
 });
 
+app.get('/adminLanding', (req, res) => {
+    res.render('adminLanding');
+});
+
 
 app.get("/dashboard_event_history", async (req, res) => {
     try {
