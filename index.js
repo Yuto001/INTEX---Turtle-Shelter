@@ -5,8 +5,8 @@ const knex = require("knex")({
     connection: {
         host: process.env.RDS_HOSTNAME || "localhost",
         user: process.env.RDS_USERNAME || "postgres",
-        password: process.env.RDS_PASSWORD || "",
-        database: process.env.RDS_DB_NAME || "dbdb", // Updated database name for the intex
+        password: process.env.RDS_PASSWORD || "password",
+        database: process.env.RDS_DB_NAME || "turtleshelter", // Updated database name for the intex
         port: process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false,
     },
@@ -129,6 +129,140 @@ app.get('/news-detail', (req, res) => {
 app.get('/news', (req, res) => {
     res.render('news');
 });
+
+
+
+// GET Route to render the addEvent.ejs form
+app.get('/addEvent', (req, res) => {
+    res.render('addEvent');
+});
+
+app.post('/addEvent', async (req, res) => {
+    const {
+        city,
+        address,
+        event_Date,
+        event_Start_Time,
+        event_Duration,
+        event_Description,
+        organizer_Id,
+        pockets,
+        collars,
+        envelopes,
+        vests,
+        completed_Products,
+    } = req.body;
+
+    try {
+        await knex('event_info').insert({
+            city,
+            address,
+            event_Date,
+            event_Start_Time,
+            event_Duration,
+            event_Description,
+            organizer_Id,
+            pockets: pockets || 0, // Default to 0 if null
+            collars: collars || 0,
+            envelopes: envelopes || 0,
+            vests: vests || 0,
+            completed_Products: completed_Products || 0,
+        });
+        res.send('Event added successfully!');
+    } catch (err) {
+        console.error('Error inserting event:', err);
+        res.status(500).send('Failed to add event.');
+    }
+});
+
+
+// Serve editEvent form
+app.get("/editEvent/:id?", async (req, res) => {
+    const eventId = req.params.id;
+    try {
+        if (eventId) {
+            // Fetch event data for editing
+            const event = await knex("event_info").where({ event_id: eventId }).first();
+            if (event) {
+                res.render("editEvent", { event });
+            } else {
+                res.status(404).send("Event not found");
+            }
+        } else {
+            // Render form for adding a new event
+            res.render("editEvent", { event: null });
+        }
+    } catch (error) {
+        console.error("Error fetching event data:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+// Handle form submission for editing/creating an event
+app.post("/editEvent", async (req, res) => {
+    const {
+        event_Id, // Included for updates
+        city,
+        address,
+        event_Date,
+        event_Start_Time,
+        organizer_Id,
+        event_Duration,
+        event_Description,
+        pockets,
+        collars,
+        envelopes,
+        vests,
+        completed_Products,
+    } = req.body;
+
+    try {
+        if (event_Id) {
+            // Update existing event
+            await knex("event_info")
+                .where({ event_id: event_Id })
+                .update({
+                    city,
+                    address,
+                    event_date: event_Date,
+                    event_start_time: event_Start_Time,
+                    organizer_id: organizer_Id,
+                    event_duration: event_Duration,
+                    event_description: event_Description,
+                    pockets,
+                    collars,
+                    envelopes,
+                    vests,
+                    completed_products: completed_Products,
+                });
+            console.log("Event updated:", event_Id);
+        } else {
+            // Insert new event
+            await knex("event_info").insert({
+                city,
+                address,
+                event_date: event_Date,
+                event_start_time: event_Start_Time,
+                organizer_id: organizer_Id,
+                event_duration: event_Duration,
+                event_description: event_Description,
+                pockets,
+                collars,
+                envelopes,
+                vests,
+                completed_products: completed_Products,
+            });
+            console.log("New event added");
+        }
+
+        res.redirect("/"); // Redirect to a confirmation or listing page
+    } catch (error) {
+        console.error("Error saving event data:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+// Start the server
 
 app.listen(port, () =>
     console.log(`Express App has started and server is listening on port ${port}!`)
