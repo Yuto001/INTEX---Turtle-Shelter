@@ -35,6 +35,10 @@ app.get("/login", (req, res) => {
 app.get("/adminLanding", (req, res) => {
     res.render("adminLanding");
 });
+// for event list
+app.get("/events", (req, res) => {
+    res.render("events");
+});
 
 // this is for login function
 app.post('/login', (req, res) => {
