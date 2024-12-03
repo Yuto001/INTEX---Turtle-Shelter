@@ -19,6 +19,7 @@ const port = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "css")));
+app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(express.urlencoded({ extended: true }));
 
@@ -43,7 +44,7 @@ app.post('/login', (req, res) => {
             if (user && user.password === password) {
                 // User found and password matches
                 
-                res.redirect('/adminDashboard'); // Redirect to /adminDahsboard
+                res.redirect('/adminLanding'); // Redirect to /adminDahsboard
             } else {
                 res.send('Invalid username or password');
             }
