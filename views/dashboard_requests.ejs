@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Requests</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 2px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        button.delete {
+            background-color: #dc3545;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Event Requests</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Organizer Email</th>
+                <th>Number of People</th>
+                <th>Sewing</th>
+                <th>Date</th>
+                <th>City</th>
+                <th>Street Address</th>
+                <th>Start Time</th>
+                <th>Length (hours)</th>
+                <th>Share Story</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% requests.forEach(request => { %>
+                <tr>
+                    <td><%= request.request_Id %></td>
+                    <td><%= request.organizer_Email %></td>
+                    <td><%= request.num_People %></td>
+                    <td><%= request.sewing %></td>
+                    <td><%= request.request_Date %></td>
+                    <td><%= request.request_City %></td>
+                    <td><%= request.request_Street_Address %></td>
+                    <td><%= request.request_Start_Time %></td>
+                    <td><%= request.request_Length %></td>
+                    <td><%= request.share_Story %></td>
+                    <td>
+                        <!-- Delete Button -->
+                        <form action="/deleteEventRequest/<%= request.request_Id %>" method="POST" style="display: inline;" onsubmit="return confirmDelete();">
+                            <button type="submit" class="delete">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <script>
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete this event request? This action cannot be undone.");
+        }
+    </script>
+</body>
+</html>
