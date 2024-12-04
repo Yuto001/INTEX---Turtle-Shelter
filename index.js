@@ -46,26 +46,29 @@ app.get('/events', (req, res) => {
 
 
 // this is for login function
-app.post('/login', (req, res) => {
+
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
-    knex('loginuser') // Replace with your table name
-        .select('username', 'password') // Include email in the query if necessary
-        .where({ username }) // Check both username and email
-        .first()
-        .then(user => {
-            if (user && user.password === password) {
-                // User found and password matches
-                
-                res.redirect('/adminDashboard'); // Redirect to /adminDahsboard
+    try {
+        const user = await knex('loginuser')
+            .select('username', 'password')
+            .where({ username })
+            .first();
+
+        if (user) {
+            if (user.password === password) {
+                return res.redirect('/adminDashboard'); // Successful login
             } else {
-                res.send('Invalid username or password');
+                return res.status(401).send('Invalid username or password'); // Password mismatch
             }
-        })
-        .catch(error => {
-            console.error('Error during login:', error);
-            res.status(500).send('Server error');
-        });
+        } else {
+            return res.status(404).send('User not found'); // Username not found
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).send('Server error');
+    }
 });
 
 // Route to test protected access (after login)
@@ -74,26 +77,6 @@ app.get('/protected', (req, res) => {
         return res.status(401).send("Unauthorized");
     }
     res.send("Welcome to the protected route!");
-});
-
-app.get("/maprating", async (req, res) => {
-    try {
-        const locations = await knex("location").select(
-            "entryid",
-            "city",
-            "state",
-            "danger_score",
-            "food_score",
-            "transportation_score",
-            "ent_score",
-            "accountid"
-        );
-        console.log("Query Result:", locations); // Debugging log
-        res.render("maprating", { locations }); // Pass data as "locations"
-    } catch (error) {
-        console.error("Here is the error:", error);
-        res.status(500).send("Server error");
-    }
 });
 
 
