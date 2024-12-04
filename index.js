@@ -52,7 +52,7 @@ app.post('/login', (req, res) => {
 
     knex('loginuser') // Replace with your table name
         .select('username', 'password') // Include email in the query if necessary
-        .where({ username: username }) // Check username
+        .where({ username }) // Check username
         .first()
         .then(user => {
             if (user && user.password === password) {
