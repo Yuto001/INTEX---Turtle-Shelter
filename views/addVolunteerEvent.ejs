@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Event for Volunteer</title>
+    <style>
+        select {
+            width: 100%;
+            height: 40px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add Event for Volunteer: <%= volunteerEmail %></h1>
+
+    <!-- Form to Add Event -->
+    <form action="/addVolunteerEvent/<%= volunteerEmail %>" method="POST">
+        <label for="event_ID">Select Event:</label>
+        <select name="event_ID" id="event_ID" required>
+            <% events.forEach(event => { %>
+                <option value="<%= event.event_ID %>">
+                    <%= event.event_ID %> - <%= event.event_Date %> - <%= event.event_Description %>
+                </option>
+            <% }) %>
+        </select>
+
+        <br><br>
+        <button type="submit">Add Event</button>
+    </form>
+</body>
+</html>
