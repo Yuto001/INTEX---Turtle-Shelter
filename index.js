@@ -51,24 +51,6 @@ app.get('/events', (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
-
-    knex('loginuser') // Replace with your table name
-        .select('username', 'password') // Include email in the query if necessary
-        .where({ username }) // Check username
-        .first()
-        .then(user => {
-            if (user && user.password === password) {
-                // User found and password matches
-                
-                res.redirect('/adminDashboard'); // Redirect to /adminDahsboard
-            } else {
-                res.send('Invalid username or password');
-            }
-        })
-        .catch(error => {
-            console.error('Error during login:', error);
-            res.status(500).send('Server error');
-        });
     try {
         const user = await knex('loginuser')
             .select('username', 'password')
@@ -324,6 +306,41 @@ app.get("/dashboard_organizers", async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
+app.get("/viewOrganizer/:email", async (req, res) => {
+    const organizerEmail = req.params.email;
+
+    try {
+        // Fetch the organizer's details
+        const organizer = await knex("organizer_info")
+            .where({ organizer_Email: organizerEmail })
+            .first();
+
+        if (!organizer) {
+            return res.status(404).send("Organizer not found.");
+        }
+
+        // Fetch events associated with the organizer's email
+        const events = await knex("event_info")
+            .where({ organizer_Id: organizer.organizer_ID }) // Match organizer ID with events
+            .select(
+                "event_ID",
+                "city",
+                "address",
+                "event_Date",
+                "event_Start_Time",
+                "event_Description",
+                "event_Duration"
+            );
+
+        // Render the organizer's details and events page
+        res.render("viewOrganizer", { organizer, events });
+    } catch (error) {
+        console.error("Error fetching organizer details or events:", error);
+        res.status(500).send("Server error.");
+    }
+});
+
 
 
 app.get("/addOrganizer", (req, res) => {
