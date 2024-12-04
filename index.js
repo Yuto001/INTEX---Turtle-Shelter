@@ -5,8 +5,8 @@ const knex = require("knex")({
     connection: {
         host: process.env.RDS_HOSTNAME || "localhost",
         user: process.env.RDS_USERNAME || "postgres",
-        password: process.env.RDS_PASSWORD || "", // this is the password for turtule shelter server
-        database: process.env.RDS_DB_NAME || "ebdb", // Updated database name for the intex
+        password: process.env.RDS_PASSWORD || "password", // this is the password for turtule shelter server
+        database: process.env.RDS_DB_NAME || "turtleshelter", // Updated database name for the intex
         port: process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false,
     },
@@ -306,6 +306,24 @@ app.post("/addOrganizer", async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
+app.post("/deleteOrganizer/:id", async (req, res) => {
+    const { id } = req.params; // Capture the organizer ID from the route parameter
+
+    try {
+        // Delete the organizer with the given ID
+        await knex("organizer_info").where("organizer_ID", id).del();
+
+        console.log(`Organizer with ID ${id} deleted successfully.`);
+
+        // Redirect back to the organizers dashboard after deletion
+        res.redirect("/dashboard_organizers");
+    } catch (error) {
+        console.error("Error deleting organizer:", error);
+        res.status(500).send("Failed to delete organizer.");
+    }
+});
+
 
 
 app.get("/editOrganizer/:id", async (req, res) => {
@@ -641,6 +659,11 @@ app.post("/submitRequest", async (req, res) => {
 app.get("/jensStory", (req, res) => {
     res.render("jensStory");
 });
+
+app.get("/techInfo", (req, res) => {
+    res.render("techInfo");
+});
+
 
 
 // Start the server
