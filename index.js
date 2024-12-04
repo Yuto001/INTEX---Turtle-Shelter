@@ -51,6 +51,24 @@ app.get('/events', (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
+
+    knex('loginuser') // Replace with your table name
+        .select('username', 'password') // Include email in the query if necessary
+        .where({ username }) // Check username
+        .first()
+        .then(user => {
+            if (user && user.password === password) {
+                // User found and password matches
+                
+                res.redirect('/adminDashboard'); // Redirect to /adminDahsboard
+            } else {
+                res.send('Invalid username or password');
+            }
+        })
+        .catch(error => {
+            console.error('Error during login:', error);
+            res.status(500).send('Server error');
+        });
     try {
         const user = await knex('loginuser')
             .select('username', 'password')
