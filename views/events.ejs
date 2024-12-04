@@ -72,6 +72,44 @@
                 <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d24362.83408083363!2d-111.65696!3d40.24565760000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sja!2sus!4v1733251665265!5m2!1sja!2sus" 
                 width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </body>
+            <h1>Events List</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>City</th>
+                <th>Address</th>
+                <th>Event Start Time</th>
+                <th>Event Date</th>
+                <th>Event Duration</th>
+                <th>Description</th>
+                <th>Pockets Score</th>
+                <th>Collars</th>
+                <th>Envelopes</th>
+                <th>Vests</th>
+                <th>Completed Products</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% locations.forEach(location => { %>
+                <tr>
+                    <td><%= eventInfo.city %></td>
+                    <td><%= eventInfo.address %></td>
+                    <td><%= eventInfo.event_Start_Time %></td>
+                    <td><%= eventInfo.event_Date %></td>
+                    <td><%= eventInfo.event_Duration %></td>
+                    <td><%= eventInfo.event_Description %></td>
+                    <td><%= eventInfo.pockets %></td>
+                    <td><%= eventInfo.collars %></td>
+                    <td><%= eventInfo.envelopes %></td>
+                    <td><%= eventInfo.vests %></td>
+                    <td><%= eventInfo.completed_Products %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <form action="/" method="GET">
+        <button type="submit">Return</button>
+    </form>
 
             <div class="site-footer-bottom">
                 <div class="container">
