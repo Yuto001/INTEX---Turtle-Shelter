@@ -789,6 +789,9 @@ app.get("/jensStory", (req, res) => {
 app.get("/techInfo", (req, res) => {
     res.render("techInfo");
 });
+app.get("/homelessnessInfo", (req, res) => {
+    res.render("homelessnessInfo");
+});
 
 
 
