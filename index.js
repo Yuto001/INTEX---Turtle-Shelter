@@ -666,6 +666,11 @@ app.get("/jensStory", (req, res) => {
     res.render("jensStory");
 });
 
+app.get("/techInfo", (req, res) => {
+    res.render("techInfo");
+});
+
+
 
 // Start the server
 
