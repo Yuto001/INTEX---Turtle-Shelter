@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    res.render("logIn"); //changed from login to logIn if this will affect
+    res.render("login");
 });
 
 app.get("/adminDashboard", (req, res) => {
@@ -40,9 +40,6 @@ app.get('/events', (req, res) => {
     res.render('events');
 });
 
-app.get('/viewVolun', (req, res) => {
-    res.render('viewVolun');
-});
 
 // this is for login function
 app.post('/login', (req, res) => {
@@ -446,16 +443,11 @@ app.post("/addVolun", async (req, res) => {
 app.get("/dashboard_volunteers", async (req, res) => {
     try {
         // Fetch all volunteers from the database
-        const volunteers = await knex("volunteer_info").select(
-            "volunteer_ID",
-            "volunteer_Email",
-            "volunteer_Fname",
-            "volunteer_Lname",
-            "volunteer_Phone",
-            "hours_Available",
-            "sewing_Skill",
-            "vir_Id"
-        );
+const volunteers = await knex('volunteer_info')
+  .leftJoin('volunteer_info_resource', 'volunteer_info.vir_Id', 'volunteer_info_resource.vir_Id')
+  .select('volunteer_info.volunteer_ID', 'volunteer_info.volunteer_Fname', 'volunteer_info.volunteer_Lname', 
+          'volunteer_info.volunteer_Email', 'volunteer_info.volunteer_Phone', 'volunteer_info.hours_Available', 
+          'volunteer_info.sewing_Skill', 'volunteer_info.vir_Id', 'volunteer_info_resource.type');
 
         // Render the dashboard view with volunteers data
         res.render("dashboard_volunteers", { volunteers });
@@ -465,25 +457,46 @@ app.get("/dashboard_volunteers", async (req, res) => {
     }
 });
 
-app.get("/viewVolun/:id", async (req, res) => {
-    const volunteerId = req.params.id;
+app.get("/viewVolun/:email", async (req, res) => {
+    const volunteerEmail = req.params.email;
+
     try {
-        const volunteer = await knex("volunteer_info").where({ volunteer_ID: volunteerId }).first();
+        // Fetch events associated with the volunteer's email from the three tables
+        const events = await knex("event_individual_info")
+            .join("event_info", "event_individual_info.event_id", "event_info.event_ID")
+            .where({ "event_individual_info.volunteer_Email": volunteerEmail })
+            .select(
+                "event_info.event_ID",
+                "event_info.city",
+                "event_info.address",
+                "event_info.event_Date",
+                "event_info.event_Start_Time",
+                "event_info.event_Description"
+            );
+
+        // Fetch the volunteer data (optional, if you want to display it)
+        const volunteer = await knex("volunteer_info")
+            .where({ volunteer_Email: volunteerEmail })
+            .first();
+
         if (!volunteer) {
             return res.status(404).send("Volunteer not found");
         }
-        res.render("viewVolun", { volunteer }); // You'll need to create the viewVolun.ejs page
+
+        // Render the viewVolun page with the events and volunteer data
+        res.render("viewVolun", { events, volunteer });
     } catch (error) {
-        console.error("Error fetching volunteer:", error);
+        console.error("Error fetching events for volunteer:", error);
         res.status(500).send("Server error");
     }
 });
 
 
-app.get("/editVolun/:id", async (req, res) => {
-    const volunteerId = req.params.id;
+
+app.get("/editVolun/:email", async (req, res) => {
+    const volunteerEmail = req.params.email;
     try {
-        const volunteer = await knex("volunteer_info").where({ volunteer_ID: volunteerId }).first();
+        const volunteer = await knex("volunteer_info").where({ volunteer_Email: volunteerEmail }).first();
         if (!volunteer) {
             return res.status(404).send("Volunteer not found");
         }
@@ -495,11 +508,11 @@ app.get("/editVolun/:id", async (req, res) => {
 });
 
 
-app.post("/deleteVolun/:id", async (req, res) => {
-    const volunteerId = req.params.id;
+app.post("/deleteVolun/:email", async (req, res) => {
+    const volunteerEmail = req.params.email;
     try {
-        await knex("volunteer_info").where({ volunteer_ID: volunteerId }).del();
-        console.log(`Volunteer with ID ${volunteerId} deleted`);
+        await knex("volunteer_info").where({ volunteer_Email: volunteerEmail }).del();
+        console.log(`Volunteer with email ${volunteerEmail} deleted`);
         res.redirect("/dashboard_volunteers");
     } catch (error) {
         console.error("Error deleting volunteer:", error);
@@ -551,12 +564,113 @@ app.post("/editVolun", async (req, res) => {
     }
 });
 
-app.get("/adminLanding", (req, res) => {
-    res.render("adminLanding");
+
+app.get("/addVolunteerEvent/:email", async (req, res) => {
+    const volunteerEmail = req.params.email;
+
+    try {
+        // Fetch all events from the event_info table
+        const events = await knex("event_info").select("event_ID", "event_Date", "event_Description");
+
+        // Render the addVolunteerEvent page with the events
+        res.render("addVolunteerEvent", { volunteerEmail, events });
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        res.status(500).send("Server error");
+    }
 });
 
-app.get('/jensStory', (req, res) => {
-    res.render('jensStory', { title: "Jen's Story - Turtle Shelter Project" });
+app.post("/addVolunteerEvent/:email", async (req, res) => {
+    const  volunteerEmail  = req.params.email;  // Capture volunteerEmail from URL
+    const { event_ID } = req.body;  // Capture selected event_ID from the form
+
+    console.log("Request Body:", req.body);  // Log the incoming request body
+    console.log("Request Param:", req.params.email)
+    try {
+        // Check if event_ID is selected
+        if (!event_ID) {
+            return res.status(400).send("Please select at least one event.");
+        }
+
+        console.log("Selected Event ID:", event_ID);  // Log the selected event ID
+        console.log("Selected Email:", volunteerEmail)
+
+        // Insert the selected event into the event_individual_info table
+        await knex("event_individual_info").insert({
+            volunteer_Email: volunteerEmail,
+            event_id: event_ID  // Ensure the correct column name (event_id)
+        });
+
+        console.log("Event added for volunteer:", volunteerEmail);
+
+        // Redirect back to the volunteer's events page
+        res.redirect(`/viewVolun/${volunteerEmail}`);
+    } catch (error) {
+        console.error("Error adding event for volunteer:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.get("/requestForm", (req, res) => {
+    res.render("requestForm");
+});
+
+app.post("/submitRequest", async (req, res) => {
+    const {
+        email,
+        people_needed,
+        sewing,
+        date,
+        city,
+        street_address,
+        start_time,
+        length_of_time,
+        story,
+        organizer_first_name,
+        organizer_last_name,
+        organizer_phone
+    } = req.body;
+
+    try {
+    // Check if the organizer email already exists in organizer_info
+    const existingOrganizer = await knex("organizer_info")
+        .select("organizer_Email") // Ensure column name matches the database schema
+        .where({ organizer_Email: email }) // Correctly check for email
+        .first();
+
+    // Insert a new organizer record only if no existing organizer is found
+    if (!existingOrganizer) {
+        await knex("organizer_info").insert({
+            organizer_Email: email, // Correct field names
+            organizer_First: organizer_first_name,
+            organizer_Last: organizer_last_name,
+            organizer_Phone: organizer_phone
+        });
+        console.log("New organizer record created for:", email);
+    } else {
+        console.log("Organizer email already exists, skipping record creation:", email);
+    }
+
+        // Insert a new record into the event_requests table
+        await knex("event_requests").insert({
+            organizer_Email : email,
+            num_People : people_needed,
+            sewing : sewing,
+            request_Date : date,
+            request_City : city,
+            request_Street_Address : street_address,
+            request_Start_Time : start_time,
+            request_Length: length_of_time,
+            share_Story :  story
+        });
+        console.log("New event request record created for:", email);
+
+        // Send a success response
+        res.send("Request submitted successfully!");
+    } catch (error) {
+        console.error("Error processing request:", error);
+        res.status(500).send("Server error");
+    }
 });
 
 

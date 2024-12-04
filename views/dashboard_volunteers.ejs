@@ -53,7 +53,7 @@
                 <th>Phone</th>
                 <th>Hours Available</th>
                 <th>Sewing Skill</th>
-                <th>Vir ID</th>
+                <th>Resource</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -66,21 +66,33 @@
                     <td><%= volunteer.volunteer_Email %></td>
                     <td><%= volunteer.volunteer_Phone %></td>
                     <td><%= volunteer.hours_Available %></td>
-                    <td><%= volunteer.sewing_Skill %></td>
-                    <td><%= volunteer.vir_Id %></td>
+                    <!-- Updated Sewing Skill column -->
+                    <td>
+                        <% if (volunteer.sewing_Skill === 1) { %>
+                            Beginner
+                        <% } else if (volunteer.sewing_Skill === 2) { %>
+                            Intermediate
+                        <% } else if (volunteer.sewing_Skill === 3) { %>
+                            Advanced
+                        <% } else { %>
+                            N/A
+                        <% } %>
+                    </td>
+                    <td><%= volunteer.type %></td>
+
                     <td>
                         <!-- View Button -->
-                        <a href="/viewVolun/<%= volunteer.volunteer_ID %>">
+                        <a href="/viewVolun/<%= volunteer.volunteer_Email %>">
                             <button>View</button>
                         </a>
 
                         <!-- Edit Button -->
-                        <a href="/editVolun/<%= volunteer.volunteer_ID %>">
+                        <a href="/editVolun/<%= volunteer.volunteer_Email %>">
                             <button>Edit</button>
                         </a>
 
                         <!-- Delete Button -->
-                        <form action="/deleteVolun/<%= volunteer.volunteer_ID %>" method="POST" style="display: inline;" onsubmit="return confirmDelete();">
+                        <form action="/deleteVolun/<%= volunteer.volunteer_Email %>" method="POST" style="display: inline;" onsubmit="return confirmDelete();">
                             <button type="submit" class="delete">Delete</button>
                         </form>
                     </td>

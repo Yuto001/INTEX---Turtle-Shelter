@@ -1,0 +1,37 @@
+<!--log in page-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/login.css">
+    <title>Log In Page</title>
+</head>
+<body>
+    <!-- Background Section -->
+    <div class="login-background">
+        <div class="login-container">
+            <h2>Admin Log In</h2>
+            
+            <br><br>
+            <form action="/login" method="POST" class="login-form">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+                <button type="submit" class="btn-login">Log In</button>
+            </form>
+
+            <div class="links">
+                <!--<a href="#" class="link">Forgot password?</a>
+                <br>--> <!--I will hide this for now because I'm not sure if we can make this work-->
+                <a href="/" class="link">Back to Home</a>
+                <!--<a href="maprating" class="link">Go to database</a>-->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
