@@ -90,19 +90,19 @@
             </tr>
         </thead>
         <tbody>
-            <% locations.forEach(location => { %>
+            <% eventInfo.forEach(event => { %>
                 <tr>
-                    <td><%= eventInfo.city %></td>
-                    <td><%= eventInfo.address %></td>
-                    <td><%= eventInfo.event_Start_Time %></td>
-                    <td><%= eventInfo.event_Date %></td>
-                    <td><%= eventInfo.event_Duration %></td>
-                    <td><%= eventInfo.event_Description %></td>
-                    <td><%= eventInfo.pockets %></td>
-                    <td><%= eventInfo.collars %></td>
-                    <td><%= eventInfo.envelopes %></td>
-                    <td><%= eventInfo.vests %></td>
-                    <td><%= eventInfo.completed_Products %></td>
+                    <td><%= event.city %></td>
+                    <td><%= event.address %></td>
+                    <td><%= event.event_Start_Time %></td>
+                    <td><%= event.event_Date %></td>
+                    <td><%= event.event_Duration %></td>
+                    <td><%= event.event_Description %></td>
+                    <td><%= event.pockets %></td>
+                    <td><%= event.collars %></td>
+                    <td><%= event.envelopes %></td>
+                    <td><%= event.vests %></td>
+                    <td><%= event.completed_Products %></td>
                 </tr>
             <% }); %>
         </tbody>

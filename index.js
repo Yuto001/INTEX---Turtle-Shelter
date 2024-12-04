@@ -3,10 +3,10 @@ const path = require("path");
 const knex = require("knex")({
     client: "pg",
     connection: {
-        host: process.env.RDS_HOSTNAME || "localhost",
-        user: process.env.RDS_USERNAME || "postgres",
-        password: process.env.RDS_PASSWORD || "password", // this is the password for turtule shelter server
-        database: process.env.RDS_DB_NAME || "turtleshelter", // Updated database name for the intex
+        host: process.env.RDS_HOSTNAME || "awseb-e-sstfzfivjz-stack-awsebrdsdatabase-g1g0yf16tkkv.c3ewy0ommwcj.us-east-1.rds.amazonaws.com",
+        user: process.env.RDS_USERNAME || "ebroot",
+        password: process.env.RDS_PASSWORD || "XgfuAombcT", // this is the password for turtule shelter server
+        database: process.env.RDS_DB_NAME || "ebdb", // Updated database name for the intex
         port: process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false,
     },
@@ -41,9 +41,6 @@ app.get("/adminDashboard", (req, res) => {
     res.render("adminDashboard");
 });
 
-app.get('/events', (req, res) => {
-    res.render('events');
-});
 
 
 // this is for login function
@@ -123,7 +120,7 @@ app.get("/events", async (req, res) => {
             "completed_Products"
         );
         console.log("Query Result:", eventInfo); // Debugging log
-        res.render("maprating", { eventInfo }); // Pass data as "locations"
+        res.render("events", { eventInfo }); // Pass data as "locations"
     } catch (error) {
         console.error("Here is the error:", error);
         res.status(500).send("Server error");
