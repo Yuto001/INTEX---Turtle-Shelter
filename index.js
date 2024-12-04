@@ -47,30 +47,28 @@ app.get('/events', (req, res) => {
 
 
 // this is for login function
-
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    try {
-        const user = await knex('loginuser')
-            .select('username', 'password')
-            .where({ username })
-            .first();
-
-        if (user) {
-            if (user.password === password) {
-                return res.redirect('/adminDashboard'); // Successful login
+    knex('loginuser') // Replace with your table name
+        .select('username', 'password') // Include email in the query if necessary
+        .where({ username: username }) // Check username
+        .first()
+        .then(user => {
+            if (user && user.password === password) {
+                // User found and password matches
+                
+                res.redirect('/adminDashboard'); // Redirect to /adminDahsboard
             } else {
-                return res.status(401).send('Invalid username or password'); // Password mismatch
+                res.send('Invalid username or password');
             }
-        } else {
-            return res.status(404).send('User not found'); // Username not found
-        }
-    } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).send('Server error');
-    }
+        })
+        .catch(error => {
+            console.error('Error during login:', error);
+            res.status(500).send('Server error');
+        });
 });
+
 
 // Route to test protected access (after login)
 app.get('/protected', (req, res) => {
