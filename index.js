@@ -678,6 +678,11 @@ app.post("/submitRequest", async (req, res) => {
 });
 
 
+app.get("/jensStory", (req, res) => {
+    res.render("jensStory");
+});
+
+
 // Start the server
 
 
