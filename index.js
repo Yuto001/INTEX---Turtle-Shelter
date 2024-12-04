@@ -5,7 +5,7 @@ const knex = require("knex")({
     connection: {
         host: process.env.RDS_HOSTNAME || "localhost",
         user: process.env.RDS_USERNAME || "postgres",
-        password: process.env.RDS_PASSWORD || "XgfuAombcT", // this is the password for turtule shelter server
+        password: process.env.RDS_PASSWORD || "", // this is the password for turtule shelter server
         database: process.env.RDS_DB_NAME || "ebdb", // Updated database name for the intex
         port: process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false,
@@ -19,7 +19,8 @@ const port = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "css")));
-app.use(express.static(path.join(__dirname, "public")));
+// Serve static files from the public folder
+app.use(express.static(path.join(__dirname, 'public')));
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(express.urlencoded({ extended: true }));
 
@@ -85,8 +86,7 @@ app.get('/protected', (req, res) => {
 // Set the view engine to EJS
 app.set('view engine', 'ejs');
 
-// Serve static files from the public folder
-app.use(express.static('public'));
+
 
 // Routes
 app.get('/', (req, res) => {
