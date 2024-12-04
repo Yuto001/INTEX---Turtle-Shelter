@@ -479,6 +479,27 @@ app.get("/viewVolun/:email", async (req, res) => {
     }
 });
 
+app.post("/deleteVolunteerEvent/:email/:eventId", async (req, res) => {
+    const { email, eventId } = req.params; // Get the volunteer's email and event ID from the URL parameters
+
+    try {
+        // Delete the record linking the volunteer and the event
+        await knex("event_individual_info")
+            .where({
+                volunteer_Email: email,
+                event_id: eventId,
+            })
+            .del();
+
+        console.log(`Event ${eventId} removed for volunteer ${email}.`);
+
+        // Redirect back to the volunteer's event page
+        res.redirect(`/viewVolun/${email}`);
+    } catch (error) {
+        console.error("Error deleting event for volunteer:", error);
+        res.status(500).send("Failed to remove event.");
+    }
+});
 
 
 app.get("/editVolun/:email", async (req, res) => {
