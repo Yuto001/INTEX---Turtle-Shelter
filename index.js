@@ -32,6 +32,10 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
+app.get("/adminLanding", (req, res) => {
+    res.render("adminLanding");
+});
+
 app.get("/adminDashboard", (req, res) => {
     res.render("adminDashboard");
 });
@@ -53,7 +57,7 @@ app.post('/login', (req, res) => {
             if (user && user.password === password) {
                 // User found and password matches
                 
-                res.redirect('/adminLanding'); // Redirect to /adminDahsboard
+                res.redirect('/adminDashboard'); // Redirect to /adminDahsboard
             } else {
                 res.send('Invalid username or password');
             }
