@@ -48,27 +48,28 @@ app.get('/events', (req, res) => {
 
 // this is for login function
 
-
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
-    knex('loginuser') // Replace with your table name
-        .select('username', 'password') // Include email in the query if necessary
-        .where({ username }) // Check username
-        .first()
-        .then(user => {
-            if (user && user.password === password) {
-                // User found and password matches
-                
-                res.redirect('/adminLanding'); // Redirect to /maprating
+    try {
+        const user = await knex('loginuser')
+            .select('username', 'password')
+            .where({ username })
+            .first();
+
+        if (user) {
+            if (user.password === password) {
+                return res.redirect('/adminDashboard'); // Successful login
             } else {
-                res.send('Invalid username or password');
+                return res.status(401).send('Invalid username or password'); // Password mismatch
             }
-        })
-        .catch(error => {
-            console.error('Error during login:', error);
-            res.status(500).send('Server error');
-        });
+        } else {
+            return res.status(404).send('User not found'); // Username not found
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).send('Server error');
+    }
 });
 
 // Route to test protected access (after login)
@@ -79,6 +80,11 @@ app.get('/protected', (req, res) => {
     res.send("Welcome to the protected route!");
 });
 
+
+
+
+// Set the view engine to EJS
+app.set('view engine', 'ejs');
 
 
 
@@ -473,6 +479,27 @@ app.get("/viewVolun/:email", async (req, res) => {
     }
 });
 
+app.post("/deleteVolunteerEvent/:email/:eventId", async (req, res) => {
+    const { email, eventId } = req.params; // Get the volunteer's email and event ID from the URL parameters
+
+    try {
+        // Delete the record linking the volunteer and the event
+        await knex("event_individual_info")
+            .where({
+                volunteer_Email: email,
+                event_id: eventId,
+            })
+            .del();
+
+        console.log(`Event ${eventId} removed for volunteer ${email}.`);
+
+        // Redirect back to the volunteer's event page
+        res.redirect(`/viewVolun/${email}`);
+    } catch (error) {
+        console.error("Error deleting event for volunteer:", error);
+        res.status(500).send("Failed to remove event.");
+    }
+});
 
 
 app.get("/editVolun/:email", async (req, res) => {
