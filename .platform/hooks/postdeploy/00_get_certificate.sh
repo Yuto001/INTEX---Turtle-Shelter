@@ -3,7 +3,7 @@
 #!/usr/bin/env bash
 
 sudo certbot -n \
--d #I need to put out domain here .com \
+-d turtle411.us-east-1.elasticbeanstalk.com \
 --nginx \
 --agree-tos \
 --email yuto.t1208@gmail.com
