@@ -3,10 +3,10 @@ const path = require("path");
 const knex = require("knex")({
     client: "pg",
     connection: {
-        host: process.env.RDS_HOSTNAME || "awseb-e-sstfzfivjz-stack-awsebrdsdatabase-g1g0yf16tkkv.c3ewy0ommwcj.us-east-1.rds.amazonaws.com",// this rds endpoint
-        user: process.env.RDS_USERNAME || "ebroot",
-        password: process.env.RDS_PASSWORD || "XgfuAombcT", // this is the password for turtule shelter server
-        database: process.env.RDS_DB_NAME || "ebdb", // Updated database name for the intex i will leave ebdb for the test phase
+        host: process.env.RDS_HOSTNAME || "localhost",
+        user: process.env.RDS_USERNAME || "postgres",
+        password: process.env.RDS_PASSWORD || "password", // this is the password for turtule shelter server
+        database: process.env.RDS_DB_NAME || "turtleshelter", // Updated database name for the intex
         port: process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false,
     },
@@ -47,9 +47,11 @@ app.get('/events', (req, res) => {
 
 
 // this is for login function
-app.post('/login', (req, res) => {
+
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
+<<<<<<< HEAD
     knex('loginuser') // Replace with your table name
         .select('username', 'password') // Include email in the query if necessary
         .where({ username }) // Check username
@@ -68,7 +70,28 @@ app.post('/login', (req, res) => {
             res.status(500).send('Server error');
         });
 });
+=======
+    try {
+        const user = await knex('loginuser')
+            .select('username', 'password')
+            .where({ username })
+            .first();
+>>>>>>> 3934c0a83c425e52220c27a746c63af28d6da5ca
 
+        if (user) {
+            if (user.password === password) {
+                return res.redirect('/adminDashboard'); // Successful login
+            } else {
+                return res.status(401).send('Invalid username or password'); // Password mismatch
+            }
+        } else {
+            return res.status(404).send('User not found'); // Username not found
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).send('Server error');
+    }
+});
 
 // Route to test protected access (after login)
 app.get('/protected', (req, res) => {
@@ -679,6 +702,48 @@ app.post("/submitRequest", async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
+app.get("/dashboard_requests", async (req, res) => {
+    try {
+        // Fetch all records from the event_requests table
+        const requests = await knex("event_requests").select(
+            "request_Id",
+            "organizer_Email",
+            "num_People",
+            "sewing",
+            "request_Date",
+            "request_City",
+            "request_Street_Address",
+            "request_Start_Time",
+            "request_Length",
+            "share_Story"
+        );
+
+        // Render the EJS page and pass the records
+        res.render("dashboard_requests", { requests });
+    } catch (error) {
+        console.error("Error fetching event requests:", error);
+        res.status(500).send("Failed to fetch event requests.");
+    }
+});
+
+app.post("/deleteEventRequest/:id", async (req, res) => {
+    const { id } = req.params; // Capture the request ID from the route parameter
+
+    try {
+        // Delete the record from the event_requests table
+        await knex("event_requests").where("request_Id", id).del();
+
+        console.log(`Request with ID ${id} deleted successfully.`);
+
+        // Redirect back to the eventRequests page
+        res.redirect("/dashboard_requests");
+    } catch (error) {
+        console.error("Error deleting request:", error);
+        res.status(500).send("Failed to delete the request.");
+    }
+});
+
 
 
 app.get("/jensStory", (req, res) => {
