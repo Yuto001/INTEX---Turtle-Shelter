@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Details</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Organizer Details</h1>
+    <p><strong>Name:</strong> <%= organizer.organizer_First %> <%= organizer.organizer_Last %></p>
+    <p><strong>Email:</strong> <%= organizer.organizer_Email %></p>
+    <p><strong>Phone:</strong> <%= organizer.organizer_Phone %></p>
+
+    <h2>Associated Events</h2>
+    <% if (events.length > 0) { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Event ID</th>
+                    <th>City</th>
+                    <th>Address</th>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>Description</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% events.forEach(event => { %>
+                    <tr>
+                        <td><%= event.event_ID %></td>
+                        <td><%= event.city %></td>
+                        <td><%= event.address %></td>
+                        <td><%= event.event_Date %></td>
+                        <td><%= event.event_Start_Time %></td>
+                        <td><%= event.event_Description %></td>
+                        <td><%= event.event_Duration %> hours</td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>No events associated with this organizer.</p>
+    <% } %>
+</body>
+</html>

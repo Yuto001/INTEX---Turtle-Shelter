@@ -71,6 +71,10 @@
                         <form action="/deleteOrganizer/<%= organizer.organizer_ID %>" method="POST" style="display: inline;" onsubmit="return confirmDelete();">
                             <button type="submit" class="delete">Delete</button>
                         </form>
+                        <!-- View button -->    
+                        <a href="/viewOrganizer/<%= organizer.organizer_Email %>">
+                            <button>View</button>
+                        </a>
                     </td>
                 </tr>
             <% }) %>
