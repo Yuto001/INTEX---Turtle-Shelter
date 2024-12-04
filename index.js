@@ -3,10 +3,10 @@ const path = require("path");
 const knex = require("knex")({
     client: "pg",
     connection: {
-        host: process.env.RDS_HOSTNAME || "awseb-e-sstfzfivjz-stack-awsebrdsdatabase-g1g0yf16tkkv.c3ewy0ommwcj.us-east-1.rds.amazonaws.com",
-        user: process.env.RDS_USERNAME || "ebroot",
-        password: process.env.RDS_PASSWORD || "XgfuAombcT", // this is the password for turtule shelter server
-        database: process.env.RDS_DB_NAME || "ebdb", // Updated database name for the intex
+        host: process.env.RDS_HOSTNAME || "localhost",
+        user: process.env.RDS_USERNAME || "postgres",
+        password: process.env.RDS_PASSWORD || "password", // this is the password for turtule shelter server
+        database: process.env.RDS_DB_NAME || "turtleshelter", // Updated database name for the intex
         port: process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false,
     },
@@ -41,6 +41,9 @@ app.get("/adminDashboard", (req, res) => {
     res.render("adminDashboard");
 });
 
+app.get('/events', (req, res) => {
+    res.render('events');
+});
 
 
 // this is for login function
@@ -100,31 +103,6 @@ app.get('/news-detail', (req, res) => {
 
 app.get('/news', (req, res) => {
     res.render('news');
-});
-
-app.get("/events", async (req, res) => {
-    try {
-        const eventInfo = await knex("event_info").select(
-            "event_ID",
-            "city",
-            "address",
-            "event_Start_Time",
-            "event_Date",
-            "organizer_Id",
-            "event_Duration",
-            "event_Description",
-            "pockets",
-            "collars",
-            "envelopes",
-            "vests",
-            "completed_Products"
-        );
-        console.log("Query Result:", eventInfo); // Debugging log
-        res.render("events", { eventInfo }); // Pass data as "locations"
-    } catch (error) {
-        console.error("Here is the error:", error);
-        res.status(500).send("Server error");
-    }
 });
 
 
@@ -303,41 +281,6 @@ app.get("/dashboard_organizers", async (req, res) => {
         res.status(500).send("Server error");
     }
 });
-
-app.get("/viewOrganizer/:email", async (req, res) => {
-    const organizerEmail = req.params.email;
-
-    try {
-        // Fetch the organizer's details
-        const organizer = await knex("organizer_info")
-            .where({ organizer_Email: organizerEmail })
-            .first();
-
-        if (!organizer) {
-            return res.status(404).send("Organizer not found.");
-        }
-
-        // Fetch events associated with the organizer's email
-        const events = await knex("event_info")
-            .where({ organizer_Id: organizer.organizer_ID }) // Match organizer ID with events
-            .select(
-                "event_ID",
-                "city",
-                "address",
-                "event_Date",
-                "event_Start_Time",
-                "event_Description",
-                "event_Duration"
-            );
-
-        // Render the organizer's details and events page
-        res.render("viewOrganizer", { organizer, events });
-    } catch (error) {
-        console.error("Error fetching organizer details or events:", error);
-        res.status(500).send("Server error.");
-    }
-});
-
 
 
 app.get("/addOrganizer", (req, res) => {
@@ -793,6 +736,96 @@ app.get("/homelessnessInfo", (req, res) => {
     res.render("homelessnessInfo");
 });
 
+app.get("/dashboard_staff_login", async (req, res) => {
+    try {
+        // Fetch all records from the staff_login table
+        const staff = await knex("staff_login").select("username", "password");
+
+        // Render the database_staff_accounts page with the fetched data
+        res.render("dashboard_staff_login", { staff });
+    } catch (error) {
+        console.error("Error fetching staff data:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.get("/addStaff", (req, res) => {
+    res.render("addStaff");
+});
+
+app.post("/addStaff", async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        // Insert new staff record into the database
+        await knex("staff_login").insert({
+            username,
+            password
+        });
+
+        // Redirect to staff accounts page
+        res.redirect("/dashboard_staff_login");
+    } catch (error) {
+        console.error("Error adding staff:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.get("/editStaff/:username", async (req, res) => {
+    const { username } = req.params;  // Capture the username from the URL parameter
+
+    try {
+        // Fetch the staff member's record based on the username
+        const staffMember = await knex("staff_login")
+            .where({ username })
+            .first();  // Get the first (and only) record
+
+        if (!staffMember) {
+            return res.status(404).send("Staff member not found");
+        }
+
+        // Render the edit form with the staff member's current username and password
+        res.render("editStaff", { staffMember });
+    } catch (error) {
+        console.error("Error fetching staff member:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.post("/editStaff/:username", async (req, res) => {
+    const { username } = req.params;
+    const { password } = req.body;
+
+    try {
+        // Update the password for the given username
+        await knex("staff_login")
+            .where({ username })
+            .update({ password });
+
+        // Redirect to the staff accounts page after editing
+        res.redirect("/dashboard_staff_login");
+    } catch (error) {
+        console.error("Error editing staff:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.post("/deleteStaff/:username", async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        // Delete the record with the given username
+        await knex("staff_login")
+            .where({ username })
+            .del();
+
+        // Redirect back to the staff accounts page after deleting
+        res.redirect("/dashboard_staff_login");
+    } catch (error) {
+        console.error("Error deleting staff:", error);
+        res.status(500).send("Failed to delete staff.");
+    }
+});
 
 
 // Start the server

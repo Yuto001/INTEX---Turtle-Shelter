@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Staff</title>
+    <style>
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Staff Member: <%= staff.username %></h1>
+    
+    <form action="/editStaff/<%= staff.username %>" method="POST">
+        <label for="password">New Password:</label>
+        <input type="password" id="password" name="password" required>
+        
+        <button type="submit">Update Password</button>
+    </form>
+    
+    <br>
+    <a href="/database_staff_accounts">Back to Staff Accounts</a>
+</body>
+</html>
