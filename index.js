@@ -5,8 +5,8 @@ const knex = require("knex")({
     connection: {
         host: process.env.RDS_HOSTNAME || "localhost",
         user: process.env.RDS_USERNAME || "postgres",
-        password: process.env.RDS_PASSWORD || "XgfuAombcT", // this is the password for turtule shelter server
-        database: process.env.RDS_DB_NAME || "ebdb", // Updated database name for the intex
+        password: process.env.RDS_PASSWORD || "password",
+        database: process.env.RDS_DB_NAME || "turtleshelter", // Updated database name for the intex
         port: process.env.RDS_PORT || 5432,
         ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false,
     },
@@ -32,10 +32,6 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
-app.get("/adminLanding", (req, res) => {
-    res.render("adminLanding");
-});
-
 app.get("/adminDashboard", (req, res) => {
     res.render("adminDashboard");
 });
@@ -46,29 +42,26 @@ app.get('/events', (req, res) => {
 
 
 // this is for login function
-
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    try {
-        const user = await knex('loginuser')
-            .select('username', 'password')
-            .where({ username })
-            .first();
-
-        if (user) {
-            if (user.password === password) {
-                return res.redirect('/adminDashboard'); // Successful login
+    knex('loginuser') // Replace with your table name
+        .select('username', 'password') // Include email in the query if necessary
+        .where({ username }) // Check both username and email
+        .first()
+        .then(user => {
+            if (user && user.password === password) {
+                // User found and password matches
+                
+                res.redirect('/adminLanding'); // Redirect to /adminDahsboard
             } else {
-                return res.status(401).send('Invalid username or password'); // Password mismatch
+                res.send('Invalid username or password');
             }
-        } else {
-            return res.status(404).send('User not found'); // Username not found
-        }
-    } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).send('Server error');
-    }
+        })
+        .catch(error => {
+            console.error('Error during login:', error);
+            res.status(500).send('Server error');
+        });
 });
 
 // Route to test protected access (after login)
@@ -79,7 +72,44 @@ app.get('/protected', (req, res) => {
     res.send("Welcome to the protected route!");
 });
 
+app.get("/maprating", async (req, res) => {
+    try {
+        const locations = await knex("location").select(
+            "entryid",
+            "city",
+            "state",
+            "danger_score",
+            "food_score",
+            "transportation_score",
+            "ent_score",
+            "accountid"
+        );
+        console.log("Query Result:", locations); // Debugging log
+        res.render("maprating", { locations }); // Pass data as "locations"
+    } catch (error) {
+        console.error("Here is the error:", error);
+        res.status(500).send("Server error");
+    }
+});
 
+app.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const user = await knex("user")
+            .select("*")
+            .where({ username, password }) // Replace with hashed password in production
+            .first();
+        if (user) {
+            console.log("Login successful:", user);
+        } else {
+            console.log("Invalid credentials");
+        }
+    } catch (error) {
+        console.error("Database query failed:", error.message);
+        res.status(500).send("Database query failed: " + error.message);
+    }
+    res.redirect("/");
+});
 
 
 // Set the view engine to EJS
@@ -186,7 +216,7 @@ app.post('/addEvent', async (req, res) => {
             vests: vests || 0,
             completed_Products: completed_Products || 0,
         });
-        res.send('Event added successfully!');
+        res.redirect('/dashboard_event_history');
     } catch (err) {
         console.error('Error inserting event:', err);
         res.status(500).send('Failed to add event.');
@@ -641,11 +671,6 @@ app.post("/submitRequest", async (req, res) => {
         console.error("Error processing request:", error);
         res.status(500).send("Server error");
     }
-});
-
-
-app.get("/jensStory", (req, res) => {
-    res.render("jensStory");
 });
 
 
