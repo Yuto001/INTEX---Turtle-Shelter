@@ -51,7 +51,7 @@ app.get('/events', (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
-<<<<<<< HEAD
+
     knex('loginuser') // Replace with your table name
         .select('username', 'password') // Include email in the query if necessary
         .where({ username }) // Check username
@@ -69,14 +69,11 @@ app.post('/login', async (req, res) => {
             console.error('Error during login:', error);
             res.status(500).send('Server error');
         });
-});
-=======
     try {
         const user = await knex('loginuser')
             .select('username', 'password')
             .where({ username })
             .first();
->>>>>>> 3934c0a83c425e52220c27a746c63af28d6da5ca
 
         if (user) {
             if (user.password === password) {
