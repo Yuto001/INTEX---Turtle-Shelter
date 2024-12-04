@@ -3,45 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Volunteer</title>
+    <title>Add Volunteer - Turtle Shelter Project</title>
+    <!-- CSS FILES -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/templatemo-kind-heart-charity.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Add Volunteer</h1>
-    <form action="/addVolun" method="POST">
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <!-- Contact Info -->
+                <div class="col-lg-6 col-12 d-flex flex-wrap">
+                    <p class="d-flex me-4 mb-0">
+                        <i class="bi-geo-alt me-2"></i> Utah
+                    </p>
+                    <p class="d-flex mb-0">
+                        <i class="bi-envelope me-2"></i>
+                        <a href="tel:8018723190">801-872-3190</a>
+                    </p>
+                </div>
 
-        <label for="volunteer_Email">Email:</label>
-        <input type="email" id="volunteer_Email" name="volunteer_Email" required>
-        <br><br>
+                <!-- Social Icons -->
+                <div class="col-lg-3 col-12 d-lg-flex justify-content-end">
+                    <ul class="social-icon">
+                        <li class="social-icon-item">
+                            <a href="https://www.facebook.com/turtleshelterproject" class="social-icon-link bi-facebook" target="_blank"></a>
+                        </li>
+                        <li class="social-icon-item">
+                            <a href="https://www.instagram.com/turtleshelterproject" class="social-icon-link bi-instagram" target="_blank"></a>
+                            </li>
+                            <li class="social-icon-item">
+                                <a href="https://www.youtube.com/@turtleshelterproject7915" class="social-icon-link bi-youtube" target="_blank"></a>
+                            </li>
+                        </ul>
+                    </div>
 
-        <label for="volunteer_Fname">First Name:</label>
-        <input type="text" id="volunteer_Fname" name="volunteer_Fname" required>
-        <br><br>
+                    <!-- Login Button -->
+                    <div class="col-lg-3 col-12 text-end">
+                        <a href="/login" class="logbtn"><span style="color: gray;">Employee Login</span></a>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-        <label for="volunteer_Lname">Last Name:</label>
-        <input type="text" id="volunteer_Lname" name="volunteer_Lname" required>
-        <br><br>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg bg-light shadow-lg">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img src="turtlelogo1.png" class="logo img-fluid" alt="Turtle Shelter">
+                    <span>
+                        Turtle Shelter Project
+                        <small>Non-profit Organization</small>
+                    </span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#section_2">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#section_3">Causes</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#section_4">Volunteer</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/jensStory">Jen's Story</a></li>
+                        <li class="nav-item ms-3"><a class="nav-link custom-btn btn" href="/donate">Donate</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
 
-        <label for="volunteer_Phone">Phone:</label>
-        <input type="tel" id="volunteer_Phone" name="volunteer_Phone" required>
-        <br><br>
+        <!-- Main Content -->
+        <main>
+            <div class="container mt-5">
+                <h1 class="text-center mb-4">Add Volunteer</h1>
+                <form action="/addVolun" method="POST" class="needs-validation" novalidate>
+                    <div class="row">
+                        <!-- Email -->
+                        <div class="col-md-6 mb-3">
+                            <label for="volunteer_Email" class="form-label">Email:</label>
+                            <input type="email" class="form-control" id="volunteer_Email" name="volunteer_Email" required>
+                        </div>
+                        <!-- Phone -->
+                        <div class="col-md-6 mb-3">
+                            <label for="volunteer_Phone" class="form-label">Phone:</label>
+                            <input type="tel" class="form-control" id="volunteer_Phone" name="volunteer_Phone" required>
+                        </div>
+                    </div>
 
-        <label for="hours_Available">Hours Available:</label>
-        <input type="number" id="hours_Available" name="hours_Available" required>
-        <br><br>
+                    <div class="row">
+                        <!-- First Name -->
+                        <div class="col-md-6 mb-3">
+                            <label for="volunteer_Fname" class="form-label">First Name:</label>
+                            <input type="text" class="form-control" id="volunteer_Fname" name="volunteer_Fname" required>
+                        </div>
+                        <!-- Last Name -->
+                        <div class="col-md-6 mb-3">
+                            <label for="volunteer_Lname" class="form-label">Last Name:</label>
+                            <input type="text" class="form-control" id="volunteer_Lname" name="volunteer_Lname" required>
+                        </div>
+                    </div>
 
-        <label for="sewing_Skill">Sewing Skill Level:</label>
-        <select id="sewing_Skill" name="sewing_Skill" required>
-            <option value="1">Beginner</option>
-            <option value="2">Intermediate</option>
-            <option value="3">Advanced</option>
-        </select>
-        <br><br>
+                    <div class="row">
+                        <!-- Hours Available -->
+                        <div class="col-md-6 mb-3">
+                            <label for="hours_Available" class="form-label">Hours Available:</label>
+                            <input type="number" class="form-control" id="hours_Available" name="hours_Available" required>
+                        </div>
+                        <!-- Sewing Skill -->
+                        <div class="col-md-6 mb-3">
+                            <label for="sewing_Skill" class="form-label">Sewing Skill Level:</label>
+                            <select class="form-select" id="sewing_Skill" name="sewing_Skill" required>
+                                <option value="1">Beginner</option>
+                                <option value="2">Intermediate</option>
+                                <option value="3">Advanced</option>
+                            </select>
+                        </div>
+                    </div>
 
-        <label for="vir_Id">Info Resource:</label>
-        <input type="number" id="vir_Id" name="vir_Id" required>
-        <br><br>
+                    <div class="row">
+                        <!-- Info Resource -->
+                        <div class="col-md-6 mb-3">
+                            <label for="vir_Id" class="form-label">Info Resource:</label>
+                            <input type="number" class="form-control" id="vir_Id" name="vir_Id" required>
+                        </div>
+                    </div>
 
-        <button type="submit">Add Volunteer</button>
-    </form>
-</body>
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Add Volunteer</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer mt-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <p>Copyright © 2036 Turtle Shelter Project. Design by TemplateMo</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Scripts -->
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/custom.js"></script>
+    </body>
 </html>
