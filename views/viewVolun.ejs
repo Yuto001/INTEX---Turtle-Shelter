@@ -55,6 +55,7 @@
                 <th>Date</th>
                 <th>Start Time</th>
                 <th>Description</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -67,6 +68,17 @@
                         <td><%= event.event_Date.toISOString().split('T')[0] %></td>
                         <td><%= event.event_Start_Time %></td>
                         <td><%= event.event_Description %></td>
+                        <td>
+                            <!-- Delete Button -->
+                            <form
+                                action="/deleteVolunteerEvent/<%= volunteer.volunteer_Email %>/<%= event.event_ID %>"
+                                method="POST"
+                                style="display: inline;"
+                                onsubmit="return confirmDelete();"
+                            >
+                                <button type="submit" class="delete">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                 <% }) %>
             <% } else { %>
