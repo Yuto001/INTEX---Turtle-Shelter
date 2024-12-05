@@ -41,8 +41,29 @@ app.get("/adminDashboard", (req, res) => {
     res.render("adminDashboard");
 });
 
-app.get('/events', (req, res) => {
-    res.render('events');
+app.get("/events", async (req, res) => {
+    try {
+        const eventInfo = await knex("event_info").select(
+            "event_ID",
+            "city",
+            "address",
+            "event_Start_Time",
+            "event_Date",
+            "organizer_Id",
+            "event_Duration",
+            "event_Description",
+            "pockets",
+            "collars",
+            "envelopes",
+            "vests",
+            "completed_Products"
+        );
+        console.log("Query Result:", eventInfo); // Debugging log
+        res.render("events", { eventInfo }); // Pass data as "locations"
+    } catch (error) {
+        console.error("Here is the error:", error);
+        res.status(500).send("Server error");
+    }
 });
 
 
