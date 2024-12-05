@@ -4,29 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Organizer</title>
+    <!-- CSS FILES -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/templatemo-kind-heart-charity.css" rel="stylesheet">
 </head>
 <%- include('partials/header') %>
 <body>
-    <h1>Add Organizer</h1>
-    <form action="/addOrganizer" method="POST">
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Add Organizer</h1>
+        <div class="card shadow-lg p-4">
+            <form action="/addOrganizer" method="POST">
+                <div class="mb-3">
+                    <label for="organizer_Email" class="form-label">Email:</label>
+                    <input type="email" id="organizer_Email" name="organizer_Email" class="form-control" required>
+                </div>
 
-        <label for="organizer_Email">Email:</label>
-        <input type="email" id="organizer_Email" name="organizer_Email" required>
-        <br><br>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="organizer_First" class="form-label">First Name:</label>
+                        <input type="text" id="organizer_First" name="organizer_First" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="organizer_Last" class="form-label">Last Name:</label>
+                        <input type="text" id="organizer_Last" name="organizer_Last" class="form-control" required>
+                    </div>
+                </div>
 
-        <label for="organizer_First">First Name:</label>
-        <input type="text" id="organizer_First" name="organizer_First" required>
-        <br><br>
+                <div class="mb-3">
+                    <label for="organizer_Phone" class="form-label">Phone:</label>
+                    <input type="tel" id="organizer_Phone" name="organizer_Phone" class="form-control" required>
+                </div>
 
-        <label for="organizer_Last">Last Name:</label>
-        <input type="text" id="organizer_Last" name="organizer_Last" required>
-        <br><br>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Add Organizer</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        <label for="organizer_Phone">Phone:</label>
-        <input type="tel" id="organizer_Phone" name="organizer_Phone" required>
-        <br><br>
-
-        <button type="submit">Add Organizer</button>
-    </form>
+    <!-- JAVASCRIPT FILES -->
+    <script src="/js/bootstrap.min.js"></script>
 </body>
 </html>
