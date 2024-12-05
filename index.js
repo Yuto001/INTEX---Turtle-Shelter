@@ -157,8 +157,8 @@ app.get('/news-detail', (req, res) => {
 app.get('/news', (req, res) => {
     res.render('news');
 });
-app.get('/faq', (req, res) => {
-    res.render('faq');
+app.get('/faqs', (req, res) => {
+    res.render('faqs');
 });
 
 
