@@ -11,12 +11,25 @@
     <link rel="stylesheet" href="css/login.css">
     <title>Log In Page</title>
     <style>
+        
        body {
     margin: 0;
     display: flex;
     flex-direction: column;
     min-height: 100vh; /* Ensures full height */
     font-family: 'Arial', sans-serif; /* Clean font */
+}
+
+.error-box {
+    background-color: #f8d7da; /* Light red background */
+    color: #721c24;          /* Dark red text */
+    padding: 10px;
+    border: 1px solid #f5c6cb; /* Red border */
+    border-radius: 5px;
+    margin-bottom: 15px;      /* Space below the box */
+    font-size: 14px;
+    text-align: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow */
 }
 
 /* Background Gradient */
@@ -175,6 +188,11 @@ footer {
             
             <br><br>
             <form action="/login" method="POST" class="login-form">
+                <% if (error) { %>
+                    <div class="error-box">
+                        <p><%= error %></p>
+                    </div>
+                <% } %>
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" placeholder="Enter your username" required>
                 
