@@ -137,6 +137,7 @@ app.get("/dashboard_event_history", async (req, res) => {
                 "event_info.address",
                 "event_info.event_Date",
                 "event_info.event_Start_Time",
+                "event_info.event_Duration",
                 "event_info.event_Description",
                 "event_info.pockets",
                 "event_info.collars",
@@ -404,9 +405,19 @@ app.post("/editOrganizer", async (req, res) => {
     }
 });
 
-app.get("/addVolun", (req, res) => {
-    res.render("addVolun");
+app.get("/addVolun", async (req, res) => {
+    try {
+        // Fetch all resources from the database
+        const volunteer_info_resource = await knex("volunteer_info_resource").select("*");
+
+        // Pass resources to the EJS template
+        res.render("addVolun", { volunteer_info_resource });
+    } catch (error) {
+        console.error("Error fetching resources for addVolun:", error);
+        res.status(500).send("Server error");
+    }
 });
+
 
 app.post("/addVolun", async (req, res) => {
     const {
@@ -525,17 +536,26 @@ app.post("/deleteVolunteerEvent/:email/:eventId", async (req, res) => {
 
 app.get("/editVolun/:email", async (req, res) => {
     const volunteerEmail = req.params.email;
+
     try {
         const volunteer = await knex("volunteer_info").where({ volunteer_Email: volunteerEmail }).first();
         if (!volunteer) {
             return res.status(404).send("Volunteer not found");
         }
-        res.render("editVolun", { volunteer }); // Create the editVolun.ejs page for editing
+
+        const volunteer_info_resource = await knex("volunteer_info_resource").select("*");
+
+        console.log("Volunteer:", volunteer); // Debug: log volunteer data
+        console.log("Resources:", volunteer_info_resource); // Debug: log resource data
+
+        res.render("editVolun", { volunteer, volunteer_info_resource });
     } catch (error) {
-        console.error("Error fetching volunteer:", error);
+        console.error("Error fetching volunteer or resources:", error);
         res.status(500).send("Server error");
     }
 });
+
+
 
 
 app.post("/deleteVolun/:email", async (req, res) => {
