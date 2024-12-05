@@ -4,119 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volunteer Dashboard</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        button {
-            padding: 5px 10px;
-            margin: 2px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-        button.delete {
-            background-color: #dc3545;
-        }
-        button:hover {
-            opacity: 0.9;
-        }
-    </style>
+    <!-- CSS FILES -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/templatemo-kind-heart-charity.css" rel="stylesheet">
 </head>
-<%- include('partials/adminHeader') %>
-<body>
-    <h1>Volunteer Dashboard</h1>
+<body id="section_1">
+    <%- include('partials/adminHeader') %>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Volunteer ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Hours Available</th>
-                <th>Sewing Skill</th>
-                <th>Resource</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% volunteers.forEach(volunteer => { %>
-                <tr>
-                    <td><%= volunteer.volunteer_ID %></td>
-                    <td><%= volunteer.volunteer_Fname %></td>
-                    <td><%= volunteer.volunteer_Lname %></td>
-                    <td><%= volunteer.volunteer_Email %></td>
-                    <td><%= volunteer.volunteer_Phone %></td>
-                    <td><%= volunteer.hours_Available %></td>
-                    <!-- Updated Sewing Skill column -->
-                    <td>
-                        <% if (volunteer.sewing_Skill === 1) { %>
-                            Beginner
-                        <% } else if (volunteer.sewing_Skill === 2) { %>
-                            Intermediate
-                        <% } else if (volunteer.sewing_Skill === 3) { %>
-                            Advanced
-                        <% } else { %>
-                            N/A
-                        <% } %>
-                    </td>
-                    <td><%= volunteer.type %></td>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Volunteer Dashboard</h1>
 
-                    <td>
-                        <!-- View Button -->
-                        <a href="/viewVolun/<%= volunteer.volunteer_Email %>">
-                            <button>View</button>
-                        </a>
+        <!-- Volunteer Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Volunteer ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Hours Available</th>
+                        <th>Sewing Skill</th>
+                        <th>Resource</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% volunteers.forEach(volunteer => { %>
+                        <tr>
+                            <td><%= volunteer.volunteer_ID %></td>
+                            <td><%= volunteer.volunteer_Fname %></td>
+                            <td><%= volunteer.volunteer_Lname %></td>
+                            <td><%= volunteer.volunteer_Email %></td>
+                            <td><%= volunteer.volunteer_Phone %></td>
+                            <td><%= volunteer.hours_Available %></td>
+                            <td>
+                                <% if (volunteer.sewing_Skill === 1) { %>
+                                    Beginner
+                                <% } else if (volunteer.sewing_Skill === 2) { %>
+                                    Intermediate
+                                <% } else if (volunteer.sewing_Skill === 3) { %>
+                                    Advanced
+                                <% } else { %>
+                                    N/A
+                                <% } %>
+                            </td>
+                            <td><%= volunteer.type %></td>
+                            <td>
+                                <!-- View Button -->
+                                <a href="/viewVolun/<%= volunteer.volunteer_Email %>" class="btn btn-primary btn-sm">View</a>
 
-                        <!-- Edit Button -->
-                        <a href="/editVolun/<%= volunteer.volunteer_Email %>">
-                            <button>Edit</button>
-                        </a>
+                                <!-- Edit Button -->
+                                <a href="/editVolun/<%= volunteer.volunteer_Email %>" class="btn btn-warning btn-sm">Edit</a>
 
-                        <!-- Delete Button -->
-                        <form action="/deleteVolun/<%= volunteer.volunteer_Email %>" method="POST" style="display: inline;" onsubmit="return confirmDelete();">
-                            <button type="submit" class="delete">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            <% }) %>
-        </tbody>
-    </table>
+                                <!-- Delete Button -->
+                                <form action="/deleteVolun/<%= volunteer.volunteer_Email %>" method="POST" style="display: inline;" onsubmit="return confirmDelete();">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
 
-    <!-- Add Volunteer Button -->
-    <a href="/addVolun" style="margin-top: 20px; display: inline-block;">
-        <button>Add Volunteer</button>
-    </a>
+        <!-- Buttons -->
+        <div class="d-flex justify-content-between mt-4">
+            <a href="/addVolun" class="btn btn-success">Add Volunteer</a>
+            <a href="/adminDashboard" class="btn btn-secondary">Back to Admin Dashboard</a>
+        </div>
+    </div>
 
-    <!-- Back to dashboard -->
-    <a href="/adminDashboard" style="margin-top: 20px; display: inline-block;">
-        <button>Back to Admin Dashboard</button>
-    </a>
-
-    <!-- Confirmation script for delete -->
+    <!-- Confirmation Script -->
     <script>
         function confirmDelete() {
             return confirm("Are you sure you want to delete this volunteer? This action cannot be undone.");
         }
     </script>
+    <!-- JS FILES -->
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/custom.js"></script>
 </body>
 </html>

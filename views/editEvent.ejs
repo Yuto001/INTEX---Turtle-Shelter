@@ -3,65 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title><%= event ? 'Edit Event' : 'Add Event' %></title>
+    <!-- CSS FILES -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/templatemo-kind-heart-charity.css" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+    </style>
 </head>
 <body id="section_1">
     <%- include('partials/adminHeader') %>
-<body>
-    <form action="/editEvent" method="POST">
-        <!-- Include hidden input for event ID if editing an existing event -->
-        <% if (event) { %>
-            <input type="hidden" name="event_Id" value="<%= event.event_ID %>">
-        <% } %>
-    
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" value="<%= event ? event.city : '' %>" required>
-        <br><br>
-        <label for="address">Address:</label>
-        <input type="text" id="address" name="address" value="<%= event ? event.address : '' %>" required>
-        <br><br>
-        <label for="event_Date">Date:</label>
-        <input type="date" id="event_Date" name="event_Date" value="<%= event ? event.event_Date.toISOString().split('T')[0] : '' %>" required>
-        <br><br>
-        <label for="event_Start_Time">Start Time:</label>
-        <input type="time" id="event_Start_Time" name="event_Start_Time" value="<%= event ? event.event_Start_Time : '' %>" required>
-        <br><br>
-        <label for="organizer_ID">Organizer:</label>
-        <select id="organizer_ID" name="organizer_ID"  required>
-            <% organizers.forEach(organizer => { %>
-                <option value="<%= organizer.organizer_ID %>" 
-                    <%= event && event.organizer_ID === organizer.organizer_ID ? 'selected' : '' %>>
-                    <%= organizer.organizer_Email %>
-                </option>
-            <% }) %>
-        </select>
-        <br><br>
-        <label for="event_Duration">Event Duration:</label>
-        <input type="number" id="event_Duration" name="event_Duration" value="<%= event ? event.event_Duration : '' %>" required>
-        <br><br>
-        <label for="event_Description">Description:</label>
-        <input type="text" id="event_Description" name="event_Description" value="<%= event ? event.event_Description : '' %>" required>
-        <br><br>
-        <label for="pockets">Number of Pockets Made:</label>
-        <input type="number" id="pockets" name="pockets" value="<%= event ? event.pockets : '' %>" required>
-        <br><br>
-        <label for="collars">Number of Collars Made:</label>
-        <input type="number" id="collars" name="collars" value="<%= event ? event.collars : '' %>" required>
-        <br><br>
-        <label for="envelopes">Number of Envelopes Made:</label>
-        <input type="number" id="envelopes" name="envelopes" value="<%= event ? event.envelopes : '' %>" required>
-        <br><br>
-        <label for="vests">Number of Vests Made:</label>
-        <input type="number" id="vests" name="vests" value="<%= event ? event.vests : '' %>" required>
-        <br><br>
-        <label for="completed_Products">Completed Products:</label>
-        <input type="number" id="completed_Products" name="completed_Products" value="<%= event ? event.completed_Products : '' %>" required>
-        <br><br>
-        <button type="submit"><%= event ? 'Update Event' : 'Add Event' %></button>
-    </form>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-      
+    <div class="form-container">
+        <h1><%= event ? 'Edit Event' : 'Add Event' %></h1>
+        <form action="/editEvent" method="POST">
+            <!-- Hidden input for event ID if editing an existing event -->
+            <% if (event) { %>
+                <input type="hidden" name="event_Id" value="<%= event.event_ID %>">
+            <% } %>
+
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" value="<%= event ? event.city : '' %>" required>
+
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" value="<%= event ? event.address : '' %>" required>
+
+            <label for="event_Date">Date:</label>
+            <input type="date" id="event_Date" name="event_Date" value="<%= event ? event.event_Date.toISOString().split('T')[0] : '' %>" required>
+
+            <label for="event_Start_Time">Start Time:</label>
+            <input type="time" id="event_Start_Time" name="event_Start_Time" value="<%= event ? event.event_Start_Time : '' %>" required>
+
+            <label for="organizer_ID">Organizer:</label>
+            <select id="organizer_ID" name="organizer_ID" required>
+                <% organizers.forEach(organizer => { %>
+                    <option value="<%= organizer.organizer_ID %>" <%= event && event.organizer_ID === organizer.organizer_ID ? 'selected' : '' %>>
+                        <%= organizer.organizer_Email %>
+                    </option>
+                <% }) %>
+            </select>
+
+            <label for="event_Duration">Event Duration (hours):</label>
+            <input type="number" id="event_Duration" name="event_Duration" value="<%= event ? event.event_Duration : '' %>" required>
+
+            <label for="event_Description">Description:</label>
+            <input type="text" id="event_Description" name="event_Description" value="<%= event ? event.event_Description : '' %>" required>
+
+            <label for="pockets">Number of Pockets Made:</label>
+            <input type="number" id="pockets" name="pockets" value="<%= event ? event.pockets : '' %>" required>
+
+            <label for="collars">Number of Collars Made:</label>
+            <input type="number" id="collars" name="collars" value="<%= event ? event.collars : '' %>" required>
+
+            <label for="envelopes">Number of Envelopes Made:</label>
+            <input type="number" id="envelopes" name="envelopes" value="<%= event ? event.envelopes : '' %>" required>
+
+            <label for="vests">Number of Vests Made:</label>
+            <input type="number" id="vests" name="vests" value="<%= event ? event.vests : '' %>" required>
+
+            <label for="completed_Products">Completed Products:</label>
+            <input type="number" id="completed_Products" name="completed_Products" value="<%= event ? event.completed_Products : '' %>" required>
+
+            <button type="submit"><%= event ? 'Update Event' : 'Add Event' %></button>
+        </form>
+    </div>
+
+    <!-- JS FILES -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/custom.js"></script>
 </body>
 </html>

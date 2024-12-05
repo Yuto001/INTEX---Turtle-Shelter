@@ -1,32 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Events Page</title>
 
-<!--maybe adding the list of events with address, then admin can look for the specific place on the map-->
+    <!-- CSS FILES -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/templatemo-kind-heart-charity.css" rel="stylesheet">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            color: #333;
+        }
+        iframe {
+            display: block;
+            margin: 20px auto;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 800px;
+            height: 450px;
+            border: 0;
+        }
+        table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .btn-return {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .btn-return:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body id="section_1">
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<%- include('partials/header') %>
 
-        <meta name="description" content="">
-        <meta name="author" content="">
+<div class="container">
+    <h1>Events List</h1>
+    
+    <!-- Google Maps Embed -->
+    <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d24362.83408083363!2d-111.65696!3d40.24565760000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sja!2sus!4v1733251665265!5m2!1sja!2sus" 
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
 
-        <title>events Page</title>
-
-        <!-- CSS FILES -->        
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-
-        <link href="css/bootstrap-icons.css" rel="stylesheet">
-
-        <link href="css/templatemo-kind-heart-charity.css" rel="stylesheet">
-        <link rel="stylesheet" href="css/login.css">
-    </head>
-    <%- include('partials/header') %>
-            <body>
-                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d24362.83408083363!2d-111.65696!3d40.24565760000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sja!2sus!4v1733251665265!5m2!1sja!2sus" 
-                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </body>
-            <h1>Events List</h1>
-    <table border="1">
+    <!-- Events Table -->
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>City</th>
@@ -48,8 +102,14 @@
                     <td><%= event.city %></td>
                     <td><%= event.address %></td>
                     <td><%= event.event_Start_Time %></td>
-                    <td><%= event.event_Date %></td>
-                    <td><%= event.event_Duration %></td>
+                    <td>
+                        <% if (event.event_Date) { %>
+                            <%= new Date(event.event_Date).toISOString().split('T')[0] %>
+                        <% } else { %>
+                            N/A
+                        <% } %>
+                    </td>
+                    <td><%= event.event_Duration %> hours</td>
                     <td><%= event.event_Description %></td>
                     <td><%= event.pockets %></td>
                     <td><%= event.collars %></td>
@@ -57,58 +117,23 @@
                     <td><%= event.vests %></td>
                     <td><%= event.completed_Products %></td>
                 </tr>
-            <% }); %>
+            <% }) %>
         </tbody>
     </table>
+
+    <!-- Return Button -->
     <form action="/" method="GET">
-        <button type="submit">Return</button>
+        <button type="submit" class="btn-return">Return</button>
     </form>
+</div>
 
-            <div class="site-footer-bottom">
-                <div class="container">
-                    <div class="row">
+<%- include('partials/footer') %>
 
-                        <div class="col-lg-6 col-md-7 col-12">
-                            <p class="copyright-text mb-0">Copyright © 2036 <a href="#">Kind Heart</a> Charity Org.
-                        	Design: <a href="https://templatemo.com" target="_blank">TemplateMo</a></p>
-                        </div>
-                        
-                        <div class="col-lg-6 col-md-5 col-12 d-flex justify-content-center align-items-center mx-auto">
-                            <ul class="social-icon">
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-twitter"></a>
-                                </li>
+<!-- JAVASCRIPT FILES -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.sticky.js"></script>
+<script src="js/custom.js"></script>
 
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-facebook"></a>
-                                </li>
-
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-instagram"></a>
-                                </li>
-
-                                <li class="social-icon-item">
-                                    <a href="#" class="social-icon-link bi-linkedin"></a>
-                                </li>
-
-                                <li class="social-icon-item">
-                                    <a href="https://youtube.com/templatemo" class="social-icon-link bi-youtube"></a>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-        </footer>
-
-        <!-- JAVASCRIPT FILES -->
-        <script src="js/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/jquery.sticky.js"></script>
-        <script src="js/click-scroll.js"></script>
-        <script src="js/counter.js"></script>
-        <script src="js/custom.js"></script>
-
-    </body>
+</body>
 </html>
