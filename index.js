@@ -90,6 +90,11 @@ app.get("/events", async (req, res) => {
 // for password hashing
 
 
+app.get('/login', (req, res) => {
+    // Render the login page without an error message
+    res.render('login', { error: null });
+});
+
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -97,13 +102,13 @@ app.post('/login', async (req, res) => {
         const staff = await knex('staff_login').where({ username }).first();
         
         if (!staff || password !== staff.password) {
-            // If credentials are invalid, pass an error message to the EJS template
+            // If credentials are invalid, render login.ejs with an error message
             return res.render('login', { error: 'Invalid username or password' });
         }
 
         // If login is successful, set session
-        req.session.staffId = staff.id; // Store session ID
-        console.log("Session ID after login:", req.session.staffId); // Debug log
+        req.session.staffId = staff.id;
+        console.log("Session ID after login:", req.session.staffId);
         res.redirect('/adminDashboard');
 
     } catch (error) {
@@ -111,6 +116,7 @@ app.post('/login', async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
 
 
 
