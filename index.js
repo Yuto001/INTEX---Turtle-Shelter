@@ -157,10 +157,6 @@ app.get('/news-detail', (req, res) => {
 app.get('/news', (req, res) => {
     res.render('news');
 });
-app.get('/faqs', (req, res) => {
-    res.render('faqs');
-});
-
 
 
 app.get("/dashboard_event_history", isLoggedIn, async (req, res) => {
@@ -210,8 +206,18 @@ app.post("/deleteEvent/:id", isLoggedIn, async (req, res) => {
 
 // GET Route to render the addEvent.ejs form
 app.get('/addEvent', isLoggedIn, (req, res) => {
-    res.render('addEvent');
+    // Assuming you're using Knex to query the database
+    knex('organizer_info')
+        .select('organizer_ID', 'organizer_Email')
+        .then(organizers => {
+            res.render('addEvent', { organizers });
+        })
+        .catch(error => {
+            console.error('Error fetching organizers:', error);
+            res.status(500).send('Server Error');
+        });
 });
+
 
 app.post('/addEvent', isLoggedIn, async (req, res) => {
     const {
@@ -221,7 +227,7 @@ app.post('/addEvent', isLoggedIn, async (req, res) => {
         event_Start_Time,
         event_Duration,
         event_Description,
-        organizer_Id,
+        organizer_ID,
         pockets,
         collars,
         envelopes,
@@ -237,7 +243,7 @@ app.post('/addEvent', isLoggedIn, async (req, res) => {
             event_Start_Time,
             event_Duration,
             event_Description,
-            organizer_Id,
+            organizer_Id: organizer_ID,
             pockets: pockets || 0, // Default to 0 if null
             collars: collars || 0,
             envelopes: envelopes || 0,
@@ -752,7 +758,7 @@ app.post("/submitRequest", async (req, res) => {
         console.log("New event request record created for:", email);
 
         // Send a success response
-        res.send("Request submitted successfully!");
+        res.redirect("/");
     } catch (error) {
         console.error("Error processing request:", error);
         res.status(500).send("Server error");

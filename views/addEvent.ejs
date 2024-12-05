@@ -9,12 +9,12 @@
     <link href="/css/bootstrap-icons.css" rel="stylesheet">
     <link href="/css/templatemo-kind-heart-charity.css" rel="stylesheet">
 </head>
-<%- include('partials/header') %>
+<%- include('partials/adminHeader') %>
 
     <!-- Main Content -->
     <main>
         <div class="container mt-5">
-            <h1 class="text-center mb-4">Request a New Event</h1>
+            <h1 class="text-center mb-4">Add a New Event</h1>
             <form action="/addEvent" method="POST" class="needs-validation" novalidate>
                 <div class="row">
                     <!-- City and Address -->
@@ -31,7 +31,7 @@
                 <div class="row">
                     <!-- Event Date and Start Time -->
                     <div class="col-md-6 mb-3">
-                        <label for="eventDate" class="form-label">Event Date:</label>
+                        <label for="event_Date" class="form-label">Event Date:</label>
                         <input type="date" class="form-control" id="event_Date" name="event_Date" required>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -47,10 +47,15 @@
                         <input type="number" class="form-control" id="event_Duration" name="event_Duration" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="organizerId" class="form-label">Organizer ID:</label>
-                        <input type="number" class="form-control" id="organizerId" name="organizer_Id" required>
+                        <label for="organizer_ID" class="form-label">Organizer Email:</label>
+                        <select class="form-control" id="organizer_ID" name="organizer_ID" required>
+                            <option value="">Select an Organizer</option>
+                            <% organizers.forEach(organizer => { %>
+                                <option value="<%= organizer.organizer_ID %>"><%= organizer.organizer_Email %></option>
+                            <% }) %>
+                        </select>
                     </div>
-                </div>
+                    
 
                 <div class="mb-3">
                     <!-- Description -->
@@ -95,7 +100,7 @@
     </main>
 
     <!-- Footer -->
-    <%- include('partials/footer') %>
+    <%- include('partials/adminFooter') %>
 
     <!-- Scripts -->
     <script src="/js/bootstrap.min.js"></script>
