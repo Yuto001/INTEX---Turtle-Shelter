@@ -188,9 +188,9 @@ footer {
             
             <br><br>
             <form action="/login" method="POST" class="login-form">
-                <% if (error) { %>
+                <% if (errorMessage) { %>
                     <div class="error-box">
-                        <p><%= error %></p>
+                        <p><%= errorMessage %></p>
                     </div>
                 <% } %>
                 <label for="username">Username:</label>

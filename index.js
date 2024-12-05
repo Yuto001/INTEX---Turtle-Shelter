@@ -90,10 +90,7 @@ app.get("/events", async (req, res) => {
 // for password hashing
 
 
-app.get('/login', (req, res) => {
-    // Render the login page without an error message
-    res.render('login', { error: null });
-});
+
 
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
@@ -103,7 +100,7 @@ app.post('/login', async (req, res) => {
         
         if (!staff || password !== staff.password) {
             // If credentials are invalid, render login.ejs with an error message
-            return res.render('login', { error: 'Invalid username or password' });
+            return res.render('login', { errorMessage: 'Invalid username or password' });
         }
 
         // If login is successful, set session
