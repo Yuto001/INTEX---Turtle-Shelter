@@ -157,10 +157,6 @@ app.get('/news-detail', (req, res) => {
 app.get('/news', (req, res) => {
     res.render('news');
 });
-app.get('/faqs', (req, res) => {
-    res.render('faqs');
-});
-
 
 
 app.get("/dashboard_event_history", isLoggedIn, async (req, res) => {
@@ -209,11 +205,11 @@ app.post("/deleteEvent/:id", isLoggedIn, async (req, res) => {
 
 
 // GET Route to render the addEvent.ejs form
-app.get('/addEvent', isLoggedIn, (req, res) => {
+app.get('/addEvent', (req, res) => {
     res.render('addEvent');
 });
 
-app.post('/addEvent', isLoggedIn, async (req, res) => {
+app.post('/addEvent', async (req, res) => {
     const {
         city,
         address,
@@ -752,7 +748,7 @@ app.post("/submitRequest", async (req, res) => {
         console.log("New event request record created for:", email);
 
         // Send a success response
-        res.send("Request submitted successfully!");
+        res.redirect("/");
     } catch (error) {
         console.error("Error processing request:", error);
         res.status(500).send("Server error");
