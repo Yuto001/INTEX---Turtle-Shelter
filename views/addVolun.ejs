@@ -64,10 +64,22 @@
                     <div class="row">
                         <!-- Info Resource -->
                         <div class="col-md-6 mb-3">
-                            <label for="vir_Id" class="form-label">Info Resource:</label>
-                            <input type="number" class="form-control" id="vir_Id" name="vir_Id" required>
+                            <label for="vir_Id" class="form-label">How did you hear about us?</label>
+                            <select class="form-control" id="vir_Id" name="vir_Id" required>
+                                <% if (volunteer_info_resource && volunteer_info_resource.length > 0) { %>
+                                    <% volunteer_info_resource.forEach(resource => { %>
+                                        <option value="<%= resource.vir_Id %>">
+                                            <%= resource.type %>
+                                        </option>
+                                    <% }) %>
+                                <% } else { %>
+                                    <option disabled>No resources available</option>
+                                <% } %>
+                            </select>
                         </div>
                     </div>
+                    
+                    
 
                     <!-- Submit Button -->
                     <div class="text-center">

@@ -53,7 +53,7 @@
         <form action="/editEvent" method="POST">
             <!-- Hidden input for event ID if editing an existing event -->
             <% if (event) { %>
-                <input type="hidden" name="event_Id" value="<%= event.event_ID %>">
+                <input type="hidden" name="event_ID" value="<%= event.event_ID %>">
             <% } %>
 
             <label for="city">City:</label>

@@ -90,7 +90,13 @@
             </select>
 
             <label for="vir_Id">Info Resource:</label>
-            <input type="number" id="vir_Id" name="vir_Id" value="<%= volunteer.vir_Id %>" required>
+            <select id="vir_Id" name="vir_Id" required>
+                <% volunteer_info_resource.forEach(resource => { %>
+                    <option value="<%= resource.vir_Id %>" <%= volunteer.vir_Id === resource.vir_Id ? 'selected' : '' %>>
+                        <%= resource.type %>
+                    </option>
+                <% }) %>
+            </select>            
 
             <button type="submit" class="btn btn-primary">Update Volunteer</button>
         </form>
