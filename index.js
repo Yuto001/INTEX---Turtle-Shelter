@@ -207,7 +207,7 @@ app.post('/addEvent', async (req, res) => {
             vests: vests || 0,
             completed_Products: completed_Products || 0,
         });
-        res.send('Event added successfully!');
+        res.redirect("/dashboard_event_history");
     } catch (err) {
         console.error('Error inserting event:', err);
         res.status(500).send('Failed to add event.');
@@ -760,7 +760,7 @@ app.get("/homelessnessInfo", (req, res) => {
 app.get("/dashboard_staff_login", async (req, res) => {
     try {
         // Fetch all records from the staff_login table
-        const staff = await knex("staff_login").select("username", "password");
+        const staff = await knex("staff_login").select("username", "password", "email");
 
         // Render the database_staff_accounts page with the fetched data
         res.render("dashboard_staff_login", { staff });
@@ -775,22 +775,19 @@ app.get("/addStaff", (req, res) => {
 });
 
 app.post("/addStaff", async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
+
+    console.log("Received Data:", req.body);
 
     try {
-        // Insert new staff record into the database
-        await knex("staff_login").insert({
-            username,
-            password
-        });
-
-        // Redirect to staff accounts page
+        await knex("staff_login").insert({ username, password, email });
         res.redirect("/dashboard_staff_login");
     } catch (error) {
         console.error("Error adding staff:", error);
         res.status(500).send("Server error");
     }
 });
+
 
 app.get("/editStaff/:username", async (req, res) => {
     const { username } = req.params;  // Capture the username from the URL parameter
@@ -815,21 +812,31 @@ app.get("/editStaff/:username", async (req, res) => {
 
 app.post("/editStaff/:username", async (req, res) => {
     const { username } = req.params;
-    const { password } = req.body;
+    const { password, email } = req.body;
 
     try {
-        // Update the password for the given username
+        // Prepare the update data
+        const updateData = {};
+        if (password) updateData.password = password.trim();
+        if (email) updateData.email = email.trim();
+
+        // Check if there's data to update
+        if (Object.keys(updateData).length === 0) {
+            return res.status(400).send("No data provided to update.");
+        }
+
+        // Perform the update
         await knex("staff_login")
             .where({ username })
-            .update({ password });
+            .update(updateData);
 
-        // Redirect to the staff accounts page after editing
         res.redirect("/dashboard_staff_login");
     } catch (error) {
         console.error("Error editing staff:", error);
         res.status(500).send("Server error");
     }
 });
+
 
 app.post("/deleteStaff/:username", async (req, res) => {
     const { username } = req.params;

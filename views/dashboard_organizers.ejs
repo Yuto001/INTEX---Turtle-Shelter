@@ -35,14 +35,14 @@
                             <td><%= organizer.organizer_Email %></td>
                             <td><%= organizer.organizer_Phone %></td>
                             <td>
+                                <!-- View button -->    
+                                <a href="/viewOrganizer/<%= organizer.organizer_Email %>" class="btn btn-primary btn-sm">View</a>
                                 <!-- Edit button -->
-                                <a href="/editOrganizer/<%= organizer.organizer_ID %>" class="btn btn-sm btn-primary mb-1">Edit</a>
+                                <a href="/editOrganizer/<%= organizer.organizer_ID %>" class="btn btn-warning btn-sm">Edit</a>
                                 <!-- Delete button -->
                                 <form action="/deleteOrganizer/<%= organizer.organizer_ID %>" method="POST" style="display: inline;" onsubmit="return confirmDelete();">
-                                    <button type="submit" class="btn btn-sm btn-danger mb-1">Delete</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
-                                <!-- View button -->    
-                                <a href="/viewOrganizer/<%= organizer.organizer_Email %>" class="btn btn-sm btn-info">View</a>
                             </td>
                         </tr>
                     <% }) %>

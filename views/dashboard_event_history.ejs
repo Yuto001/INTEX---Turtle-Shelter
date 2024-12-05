@@ -61,9 +61,9 @@
                                 <% } %>
                             </td>
                             <td>
-                                <a href="/editEvent/<%= event.event_ID %>" class="btn btn-sm btn-primary mb-1">Edit</a>
+                                <a href="/editEvent/<%= event.event_ID %>" class="btn btn-warning btn-sm">Edit</a>
                                 <form action="/deleteEvent/<%= event.event_ID %>" method="POST" style="display: inline;" onsubmit="return confirmDelete();">
-                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
                             </td>
                         </tr>

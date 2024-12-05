@@ -26,6 +26,7 @@
                     <tr>
                         <th>Username</th>
                         <th>Password</th>
+                        <th>Email</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -34,13 +35,13 @@
                         <tr>
                             <td><%= staffMember.username %></td>
                             <td><%= staffMember.password %></td>
+                            <td><%= staffMember.email %></td>
                             <td>
                                 <!-- Edit Button -->
-                                <form action="/editStaff/<%= staffMember.username %>" method="POST" class="d-inline">
-                                    <div class="input-group">
-                                        <input type="password" name="password" class="form-control" placeholder="New password" required>
+                                <form action="/editStaff/<%= staffMember.username %>" method="GET" class="d-inline">
+
                                         <button type="submit" class="btn btn-warning btn-sm">Edit</button>
-                                    </div>
+
                                 </form>
                                 <!-- Delete Button -->
                                 <form action="/deleteStaff/<%= staffMember.username %>" method="POST" class="d-inline" onsubmit="return confirmDelete();">

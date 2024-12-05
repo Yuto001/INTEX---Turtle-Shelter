@@ -61,16 +61,36 @@
     <%- include('partials/adminHeader') %>
 
     <div class="container">
-        <h1>Edit Staff Member: <%= staff.username %></h1>
+        <h1>Edit Staff Member: <%= staffMember.username %></h1>
         
-        <form action="/editStaff/<%= staff.username %>" method="POST">
-            <label for="password">New Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter new password" required>
+        <form action="/editStaff/<%= staffMember.username %>" method="POST">
+            <label for="username">Username:</label>
+            <input 
+                type="text" 
+                id="username" 
+                name="username" 
+                value="<%= staffMember.username %>" 
+                required>
             
-            <button type="submit" class="btn btn-primary">Update Password</button>
+            <label for="password">Password:</label>
+            <input 
+                type="text" 
+                id="password" 
+                name="password" 
+                value="<%= staffMember.password %>" 
+                required>                   
+                <label for="email">Email:</label>
+            <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                value="<%= staffMember.email %>" 
+                required>
+
+            <button type="submit" class="btn btn-primary">Update Info</button>
         </form>
         
-        <a href="/database_staff_accounts">Back to Staff Accounts</a>
+        <a href="/dashboard_staff_login">Back to Staff Accounts</a>
     </div>
 
     <!-- JAVASCRIPT FILES -->
