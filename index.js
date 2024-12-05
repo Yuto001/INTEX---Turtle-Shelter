@@ -96,18 +96,14 @@ app.post('/login', async (req, res) => {
     try {
         const staff = await knex('staff_login').where({ username }).first();
         
-        if (!staff) {
-            return res.status(401).send('Invalid credentials');
+        if (!staff || password !== staff.password) {
+            // If credentials are invalid, pass an error message to the EJS template
+            return res.render('login', { error: 'Invalid username or password' });
         }
 
-        // Directly compare the input password with the stored plain-text password
-        if (password !== staff.password) {
-            return res.status(401).send('Invalid credentials');
-        }
-
-        // If password matches, set the session
-        req.session.staffId = staff.id;  // Store session ID to indicate the user is logged in
-        console.log("Session ID after login:", req.session.staffId);  // Debug log
+        // If login is successful, set session
+        req.session.staffId = staff.id; // Store session ID
+        console.log("Session ID after login:", req.session.staffId); // Debug log
         res.redirect('/adminDashboard');
 
     } catch (error) {
@@ -115,6 +111,7 @@ app.post('/login', async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
 
 
 function isLoggedIn(req, res, next) {
