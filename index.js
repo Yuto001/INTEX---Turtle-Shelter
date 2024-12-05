@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require('bcrypt');
 const path = require("path");
 const knex = require("knex")({
     client: "pg",
@@ -13,6 +14,7 @@ const knex = require("knex")({
 });
 
 const app = express();
+const session = require("express-session")
 const port = process.env.PORT || 3000;
 
 // Set up view engine and static file serving
@@ -24,6 +26,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(express.urlencoded({ extended: true }));
 
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
+});
+
+app.use(session({
+    secret: "test", // Replace with a secure key
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Use `secure: true` if using HTTPS
+})
+);
+
+
 // Routes
 app.get("/", (req, res) => {
     res.render("index");
@@ -33,13 +49,15 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
-app.get("/adminLanding", (req, res) => {
+app.get("/adminLanding", isLoggedIn, (req, res) => {
     res.render("adminLanding");
 });
 
-app.get("/adminDashboard", (req, res) => {
+app.get("/adminDashboard", isLoggedIn, (req, res) => {
     res.render("adminDashboard");
 });
+
+
 
 app.get("/events", async (req, res) => {
     try {
@@ -69,29 +87,43 @@ app.get("/events", async (req, res) => {
 
 // this is for login function
 
+// for password hashing
+
+
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const user = await knex('staff_login')
-            .select('username', 'password')
-            .where({ username })
-            .first();
-
-        if (user) {
-            if (user.password === password) {
-                return res.redirect('/adminDashboard'); // Successful login
-            } else {
-                return res.status(401).send('Invalid username or password'); // Password mismatch
-            }
-        } else {
-            return res.status(404).send('User not found'); // Username not found
+        const staff = await knex('staff_login').where({ username }).first();
+        
+        if (!staff) {
+            return res.status(401).send('Invalid credentials');
         }
+
+        // Directly compare the input password with the stored plain-text password
+        if (password !== staff.password) {
+            return res.status(401).send('Invalid credentials');
+        }
+
+        // If password matches, set the session
+        req.session.staffId = staff.id;  // Store session ID to indicate the user is logged in
+        console.log("Session ID after login:", req.session.staffId);  // Debug log
+        res.redirect('/adminDashboard');
+
     } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).send('Server error');
+        console.error("Error during login:", error);
+        res.status(500).send("Server error");
     }
 });
+
+
+function isLoggedIn(req, res, next) {
+    console.log("Session data in isLoggedIn:", req.session);  // Log the session data
+    if (!req.session.staffId) {
+        return res.redirect('/login');  // Redirect to login if not authenticated
+    }
+    next();  // Proceed to the next handler if authenticated
+}
 
 // Route to test protected access (after login)
 app.get('/protected', (req, res) => {
@@ -125,9 +157,13 @@ app.get('/news-detail', (req, res) => {
 app.get('/news', (req, res) => {
     res.render('news');
 });
+app.get('/faqs', (req, res) => {
+    res.render('faqs');
+});
 
 
-app.get("/dashboard_event_history", async (req, res) => {
+
+app.get("/dashboard_event_history", isLoggedIn, async (req, res) => {
     try {
         const events = await knex("event_info")
             .leftJoin("organizer_info", "event_info.organizer_Id", "organizer_info.organizer_ID")
@@ -158,7 +194,7 @@ app.get("/dashboard_event_history", async (req, res) => {
 
 
 // Route to delete an event
-app.post("/deleteEvent/:id", async (req, res) => {
+app.post("/deleteEvent/:id", isLoggedIn, async (req, res) => {
     const eventID = req.params.id;
     try {
         await knex("event_info").where({ event_ID: eventID }).del();
@@ -173,11 +209,11 @@ app.post("/deleteEvent/:id", async (req, res) => {
 
 
 // GET Route to render the addEvent.ejs form
-app.get('/addEvent', (req, res) => {
+app.get('/addEvent', isLoggedIn, (req, res) => {
     res.render('addEvent');
 });
 
-app.post('/addEvent', async (req, res) => {
+app.post('/addEvent', isLoggedIn, async (req, res) => {
     const {
         city,
         address,
@@ -217,7 +253,7 @@ app.post('/addEvent', async (req, res) => {
 
 
 // Serve editEvent form
-app.get("/editEvent/:id?", async (req, res) => {
+app.get("/editEvent/:id?", isLoggedIn, async (req, res) => {
     const eventId = req.params.id;
 
     try {
@@ -238,7 +274,7 @@ app.get("/editEvent/:id?", async (req, res) => {
 });
 
 // Handle form submission for editing/creating an event
-app.post("/editEvent", async (req, res) => {
+app.post("/editEvent", isLoggedIn, async (req, res) => {
     const {
         event_ID, // Included for updates
         city,
@@ -285,7 +321,7 @@ app.post("/editEvent", async (req, res) => {
 });
 
 
-app.get("/dashboard_organizers", async (req, res) => {
+app.get("/dashboard_organizers", isLoggedIn, async (req, res) => {
     try {
         // Fetch all organizers from the database
         const organizers = await knex("organizer_info").select(
@@ -305,11 +341,11 @@ app.get("/dashboard_organizers", async (req, res) => {
 });
 
 
-app.get("/addOrganizer", (req, res) => {
+app.get("/addOrganizer", isLoggedIn, (req, res) => {
     res.render("addOrganizer");
 });
 
-app.post("/addOrganizer", async (req, res) => {
+app.post("/addOrganizer", isLoggedIn, async (req, res) => {
     const { organizer_ID, organizer_Email, organizer_First, organizer_Last, organizer_Phone } = req.body;
 
     try {
@@ -335,7 +371,7 @@ app.post("/addOrganizer", async (req, res) => {
     }
 });
 
-app.post("/deleteOrganizer/:id", async (req, res) => {
+app.post("/deleteOrganizer/:id", isLoggedIn, async (req, res) => {
     const { id } = req.params; // Capture the organizer ID from the route parameter
 
     try {
@@ -354,7 +390,7 @@ app.post("/deleteOrganizer/:id", async (req, res) => {
 
 
 
-app.get("/editOrganizer/:id", async (req, res) => {
+app.get("/editOrganizer/:id", isLoggedIn, async (req, res) => {
     const organizerId = req.params.id;
 
     try {
@@ -375,7 +411,7 @@ app.get("/editOrganizer/:id", async (req, res) => {
     }
 });
 
-app.post("/editOrganizer", async (req, res) => {
+app.post("/editOrganizer", isLoggedIn, async (req, res) => {
     const { organizer_ID, organizer_First, organizer_Last, organizer_Email, organizer_Phone } = req.body;
 
     try {
@@ -460,7 +496,7 @@ app.post("/addVolun", async (req, res) => {
     }
 });
 
-app.get("/dashboard_volunteers", async (req, res) => {
+app.get("/dashboard_volunteers", isLoggedIn, async (req, res) => {
     try {
         // Fetch all volunteers from the database
 const volunteers = await knex('volunteer_info')
@@ -477,7 +513,7 @@ const volunteers = await knex('volunteer_info')
     }
 });
 
-app.get("/viewVolun/:email", async (req, res) => {
+app.get("/viewVolun/:email", isLoggedIn, async (req, res) => {
     const volunteerEmail = req.params.email;
 
     try {
@@ -511,7 +547,7 @@ app.get("/viewVolun/:email", async (req, res) => {
     }
 });
 
-app.post("/deleteVolunteerEvent/:email/:eventId", async (req, res) => {
+app.post("/deleteVolunteerEvent/:email/:eventId", isLoggedIn, async (req, res) => {
     const { email, eventId } = req.params; // Get the volunteer's email and event ID from the URL parameters
 
     try {
@@ -534,7 +570,7 @@ app.post("/deleteVolunteerEvent/:email/:eventId", async (req, res) => {
 });
 
 
-app.get("/editVolun/:email", async (req, res) => {
+app.get("/editVolun/:email", isLoggedIn, async (req, res) => {
     const volunteerEmail = req.params.email;
 
     try {
@@ -558,7 +594,7 @@ app.get("/editVolun/:email", async (req, res) => {
 
 
 
-app.post("/deleteVolun/:email", async (req, res) => {
+app.post("/deleteVolun/:email", isLoggedIn, async (req, res) => {
     const volunteerEmail = req.params.email;
     try {
         await knex("volunteer_info").where({ volunteer_Email: volunteerEmail }).del();
@@ -570,7 +606,7 @@ app.post("/deleteVolun/:email", async (req, res) => {
     }
 });
 
-app.post("/editVolun", async (req, res) => {
+app.post("/editVolun", isLoggedIn, async (req, res) => {
     const {
         volunteer_ID,
         volunteer_Email,
@@ -615,7 +651,7 @@ app.post("/editVolun", async (req, res) => {
 });
 
 
-app.get("/addVolunteerEvent/:email", async (req, res) => {
+app.get("/addVolunteerEvent/:email", isLoggedIn, async (req, res) => {
     const volunteerEmail = req.params.email;
 
     try {
@@ -630,7 +666,7 @@ app.get("/addVolunteerEvent/:email", async (req, res) => {
     }
 });
 
-app.post("/addVolunteerEvent/:email", async (req, res) => {
+app.post("/addVolunteerEvent/:email", isLoggedIn, async (req, res) => {
     const  volunteerEmail  = req.params.email;  // Capture volunteerEmail from URL
     const { event_ID } = req.body;  // Capture selected event_ID from the form
 
@@ -723,7 +759,7 @@ app.post("/submitRequest", async (req, res) => {
     }
 });
 
-app.get("/dashboard_requests", async (req, res) => {
+app.get("/dashboard_requests", isLoggedIn, async (req, res) => {
     try {
         // Fetch all records from the event_requests table
         const requests = await knex("event_requests").select(
@@ -747,7 +783,7 @@ app.get("/dashboard_requests", async (req, res) => {
     }
 });
 
-app.post("/deleteEventRequest/:id", async (req, res) => {
+app.post("/deleteEventRequest/:id", isLoggedIn, async (req, res) => {
     const { id } = req.params; // Capture the request ID from the route parameter
 
     try {
@@ -777,7 +813,7 @@ app.get("/homelessnessInfo", (req, res) => {
     res.render("homelessnessInfo");
 });
 
-app.get("/dashboard_staff_login", async (req, res) => {
+app.get("/dashboard_staff_login", isLoggedIn, async (req, res) => {
     try {
         // Fetch all records from the staff_login table
         const staff = await knex("staff_login").select("username", "password", "email");
@@ -790,11 +826,11 @@ app.get("/dashboard_staff_login", async (req, res) => {
     }
 });
 
-app.get("/addStaff", (req, res) => {
+app.get("/addStaff", isLoggedIn,(req, res) => {
     res.render("addStaff");
 });
 
-app.post("/addStaff", async (req, res) => {
+app.post("/addStaff", isLoggedIn, async (req, res) => {
     const { username, password, email } = req.body;
 
     console.log("Received Data:", req.body);
@@ -809,7 +845,7 @@ app.post("/addStaff", async (req, res) => {
 });
 
 
-app.get("/editStaff/:username", async (req, res) => {
+app.get("/editStaff/:username", isLoggedIn, async (req, res) => {
     const { username } = req.params;  // Capture the username from the URL parameter
 
     try {
@@ -830,7 +866,7 @@ app.get("/editStaff/:username", async (req, res) => {
     }
 });
 
-app.post("/editStaff/:username", async (req, res) => {
+app.post("/editStaff/:username", isLoggedIn, async (req, res) => {
     const { username } = req.params;
     const { password, email } = req.body;
 
@@ -858,7 +894,7 @@ app.post("/editStaff/:username", async (req, res) => {
 });
 
 
-app.post("/deleteStaff/:username", async (req, res) => {
+app.post("/deleteStaff/:username", isLoggedIn, async (req, res) => {
     const { username } = req.params;
 
     try {
