@@ -46,7 +46,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    res.render("login");
+    res.render('login', { errorMessage: null });
 });
 
 app.get("/adminLanding", isLoggedIn, (req, res) => {
@@ -88,24 +88,24 @@ app.get("/events", async (req, res) => {
 // this is for login function
 
 // for password hashing
-
-
-
-
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
         const staff = await knex('staff_login').where({ username }).first();
         
-        if (!staff || password !== staff.password) {
-            // If credentials are invalid, render login.ejs with an error message
-            return res.render('login', { errorMessage: 'Invalid username or password' });
+        if (!staff) {
+            return res.render('login', { errorMessage: 'Invalid username' });
         }
 
-        // If login is successful, set session
-        req.session.staffId = staff.id;
-        console.log("Session ID after login:", req.session.staffId);
+        // Directly compare the input password with the stored plain-text password
+        if (password !== staff.password) {
+            return res.render('login', { errorMessage: 'Invalid password' });
+        }
+
+        // If password matches, set the session
+        req.session.staffId = staff.id;  // Store session ID to indicate the user is logged in
+        console.log("Session ID after login:", req.session.staffId);  // Debug log
         res.redirect('/adminDashboard');
 
     } catch (error) {
@@ -113,6 +113,9 @@ app.post('/login', async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
+
+
 
 
 
