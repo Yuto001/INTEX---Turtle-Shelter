@@ -73,7 +73,7 @@ app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const user = await knex('loginuser')
+        const user = await knex('staff_login')
             .select('username', 'password')
             .where({ username })
             .first();
