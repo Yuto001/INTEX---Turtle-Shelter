@@ -205,11 +205,11 @@ app.post("/deleteEvent/:id", isLoggedIn, async (req, res) => {
 
 
 // GET Route to render the addEvent.ejs form
-app.get('/addEvent', (req, res) => {
+app.get('/addEvent', isLoggedIn, (req, res) => {
     res.render('addEvent');
 });
 
-app.post('/addEvent', async (req, res) => {
+app.post('/addEvent', isLoggedIn, async (req, res) => {
     const {
         city,
         address,
