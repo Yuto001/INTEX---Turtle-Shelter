@@ -39,7 +39,7 @@
 
 <nav class="navbar navbar-expand-lg bg-light shadow-lg">
     <div class="container">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="/">
             <img src="turtlelogo1.png" class="logo img-fluid" alt="Turtle Shelter">
             <span>
                 Turtle Shelter Project
@@ -68,9 +68,13 @@
                     </ul>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link click-scroll" href="/events">Events</a>
-                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="eventsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Events</a>
+                    <ul class="dropdown-menu" aria-labelledby="eventsDropdown">
+                        <li><a class="dropdown-item" href="/events">Upcoming</a></li>
+                        <li><a class="dropdown-item" href="/addEvent">Request</a></li>
+                    </ul>
+                </li>                
 
                 <li class="nav-item">
                     <a class="nav-link click-scroll" href="/addVolun">Volunteer</a>
