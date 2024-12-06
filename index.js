@@ -161,6 +161,9 @@ app.get('/news', (req, res) => {
     res.render('news');
 });
 
+app.get('/faqs', (req, res) => {
+    res.render('faqs');
+});
 
 app.get("/dashboard_event_history", isLoggedIn, async (req, res) => {
     try {
