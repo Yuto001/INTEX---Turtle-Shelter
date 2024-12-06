@@ -498,7 +498,7 @@ app.post("/addVolun", async (req, res) => {
             vir_Id
         });
 
-        res.redirect("/dashboard_volunteers"); // Redirect to the dashboard or another page
+        res.redirect("/"); // Redirect to the dashboard or another page
     } catch (error) {
         console.error("Error adding volunteer:", error);
         res.status(500).send("Server error");
