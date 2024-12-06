@@ -28,38 +28,41 @@
             margin-bottom: 5px;
             display: block;
         }
-        input, .form-container .form-button {
+        .form-container input,
+        .form-container .form-button {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            box-sizing: border-box;
         }
         .form-container .form-button {
-            background-color: #007bff;
-            color: white;
+            background-color: #007bff !important;
+            color: white !important;
             font-weight: bold;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            border: none !important;
+            cursor: pointer !important;
+            transition: background-color 0.3s ease !important;
+            text-align: center;
         }
         .form-container .form-button:hover {
-            background-color: #0056b3;
+            background-color: #0056b3 !important;
         }
         .form-buttons {
             display: flex;
             justify-content: space-between;
             gap: 10px;
         }
-        a {
+        .form-container a {
             display: block;
             text-align: center;
-            color: #007bff;
+            color: #007bff !important;
             margin-top: 20px;
             text-decoration: none;
         }
-        a:hover {
-            text-decoration: underline;
+        .form-container a:hover {
+            text-decoration: underline !important;
         }
     </style>
 </head>

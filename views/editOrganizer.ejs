@@ -9,7 +9,7 @@
     <link href="/css/bootstrap-icons.css" rel="stylesheet">
     <link href="/css/templatemo-kind-heart-charity.css" rel="stylesheet">
     <style>
-        .container {
+        .form-container {
             margin-top: 50px;
             max-width: 700px;
             background-color: #f9f9f9;
@@ -17,35 +17,38 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        h1 {
+        .form-container h1 {
             text-align: center;
             margin-bottom: 30px;
             font-size: 2rem;
             color: #333;
         }
-        label {
+        .form-container label {
             font-weight: bold;
             margin-bottom: 5px;
+            display: block;
         }
-        input, .form-container .form-button {
+        .form-container input,
+        .form-container .form-button {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            box-sizing: border-box;
         }
         .form-container .form-button {
-            background-color: #007bff;
-            color: white;
+            background-color: #007bff !important; /* Ensure scoped button styles override global styles */
+            color: white !important;
             font-weight: bold;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            border: none !important;
+            cursor: pointer !important;
+            transition: background-color 0.3s ease !important;
         }
         .form-container .form-button:hover {
-            background-color: #0056b3;
+            background-color: #0056b3 !important;
         }
-        .form-buttons {
+        .form-container .form-buttons {
             display: flex;
             justify-content: space-between;
             gap: 10px;
@@ -55,7 +58,7 @@
 <body id="section_1">
     <%- include('partials/adminHeader') %>
 
-    <div class="container form-container">
+    <div class="form-container">
         <h1>Edit Organizer</h1>
         <form action="/editOrganizer" method="POST">
             <!-- Organizer ID (Hidden Field) -->
@@ -96,4 +99,5 @@
     <script src="/js/custom.js"></script>
 </body>
 </html>
+
 
