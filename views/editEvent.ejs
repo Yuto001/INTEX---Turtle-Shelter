@@ -21,7 +21,7 @@
             font-weight: bold;
             margin-top: 10px;
         }
-        input, select, button {
+        input, select, .form-button {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
@@ -29,14 +29,20 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        button {
+        .form-button {
             background-color: #007bff;
             color: white;
             font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        button:hover {
+        .form-button:hover {
             background-color: #0056b3;
+        }
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
         }
         h1 {
             text-align: center;
@@ -98,7 +104,12 @@
             <label for="completed_Products">Completed Products:</label>
             <input type="number" id="completed_Products" name="completed_Products" value="<%= event ? event.completed_Products : '' %>" required>
 
-            <button type="submit"><%= event ? 'Update Event' : 'Add Event' %></button>
+            <div class="form-buttons">
+                <button type="submit" class="form-button"><%= event ? 'Update Event' : 'Add Event' %></button>
+                <% if (event) { %>
+                    <button type="button" class="form-button" onclick="location.href='/deleteEvent/<%= event.event_ID %>'">Delete Event</button>
+                <% } %>
+            </div>
         </form>
     </div>
     <%- include('partials/adminFooter') %>
@@ -109,3 +120,4 @@
     <script src="/js/custom.js"></script>
 </body>
 </html>
+

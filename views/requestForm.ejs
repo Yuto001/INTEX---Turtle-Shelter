@@ -39,12 +39,19 @@
             border-radius: 5px;
             box-sizing: border-box;
         }
+        .request-form .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
         .request-form button {
             background-color: #007bff;
             color: white;
             font-weight: bold;
             border: none;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
         .request-form button:hover {
             background-color: #0056b3;
@@ -94,13 +101,17 @@
                 <label for="length_of_time">Length of Time (in hours)</label>
                 <input type="number" id="length_of_time" name="length_of_time" min="1" required>
 
-                <!-- Organizer First Name -->
-                <label for="organizer_first_name">First Name of Organizer</label>
-                <input type="text" id="organizer_first_name" name="organizer_first_name" required>
-
-                <!-- Organizer Last Name -->
-                <label for="organizer_last_name">Last Name of Organizer</label>
-                <input type="text" id="organizer_last_name" name="organizer_last_name" required>
+                <!-- Organizer Name (Side-by-Side) -->
+                <div class="form-buttons">
+                    <div style="flex: 1;">
+                        <label for="organizer_first_name">First Name of Organizer</label>
+                        <input type="text" id="organizer_first_name" name="organizer_first_name" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="organizer_last_name">Last Name of Organizer</label>
+                        <input type="text" id="organizer_last_name" name="organizer_last_name" required>
+                    </div>
+                </div>
 
                 <!-- Organizer Phone Number -->
                 <label for="organizer_phone">Organizer Phone Number</label>

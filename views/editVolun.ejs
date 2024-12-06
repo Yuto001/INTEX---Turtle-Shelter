@@ -28,22 +28,28 @@
             margin-bottom: 5px;
             display: block;
         }
-        input, select, button {
+        input, select, .form-button {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        button {
+        .form-button {
             background-color: #007bff;
             color: white;
             font-weight: bold;
             border: none;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        button:hover {
+        .form-button:hover {
             background-color: #0056b3;
+        }
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
         }
         a {
             display: block;
@@ -98,7 +104,10 @@
                 <% }) %>
             </select>            
 
-            <button type="submit" class="btn btn-primary">Update Volunteer</button>
+            <div class="form-buttons">
+                <button type="submit" class="form-button">Update Volunteer</button>
+                <button type="button" class="form-button" onclick="location.href='/deleteVolunteer/<%= volunteer.volunteer_ID %>'">Delete Volunteer</button>
+            </div>
         </form>
 
         <a href="/adminDashboard">Back to Admin Dashboard</a>
@@ -113,4 +122,3 @@
     <script src="/js/custom.js"></script>
 </body>
 </html>
-

@@ -28,22 +28,28 @@
             margin-bottom: 5px;
             display: block;
         }
-        input, button {
+        input, .form-button {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        button {
+        .form-button {
             background-color: #007bff;
             color: white;
             font-weight: bold;
             border: none;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        button:hover {
+        .form-button:hover {
             background-color: #0056b3;
+        }
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
         }
         a {
             display: block;
@@ -78,8 +84,9 @@
                 id="password" 
                 name="password" 
                 value="<%= staffMember.password %>" 
-                required>                   
-                <label for="email">Email:</label>
+                required>
+                
+            <label for="email">Email:</label>
             <input 
                 type="email" 
                 id="email" 
@@ -87,7 +94,10 @@
                 value="<%= staffMember.email %>" 
                 required>
 
-            <button type="submit" class="btn btn-primary">Update Info</button>
+            <div class="form-buttons">
+                <button type="submit" class="form-button">Update Info</button>
+                <button type="button" class="form-button" onclick="location.href='/deleteStaff/<%= staffMember.username %>'">Delete Staff</button>
+            </div>
         </form>
         
         <a href="/dashboard_staff_login">Back to Staff Accounts</a>
@@ -101,3 +111,4 @@
     <script src="/js/custom.js"></script>
 </body>
 </html>
+

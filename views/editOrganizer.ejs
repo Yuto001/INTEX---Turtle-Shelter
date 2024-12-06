@@ -27,22 +27,28 @@
             font-weight: bold;
             margin-bottom: 5px;
         }
-        input, button {
+        input, .form-button {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        button {
+        .form-button {
             background-color: #007bff;
             color: white;
             font-weight: bold;
             border: none;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        button:hover {
+        .form-button:hover {
             background-color: #0056b3;
+        }
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
         }
     </style>
 </head>
@@ -75,7 +81,10 @@
                 <input type="tel" id="organizer_Phone" name="organizer_Phone" value="<%= organizer.organizer_Phone %>" required>
             </div>
 
-            <button type="submit" class="btn btn-primary">Update Organizer</button>
+            <div class="form-buttons">
+                <button type="submit" class="form-button">Update Organizer</button>
+                <button type="button" class="form-button" onclick="location.href='/deleteOrganizer/<%= organizer.organizer_ID %>'">Delete Organizer</button>
+            </div>
         </form>
     </div>
     <%- include('partials/adminFooter') %>
