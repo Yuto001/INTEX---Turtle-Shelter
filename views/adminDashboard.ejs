@@ -20,19 +20,23 @@
 
     </head>
     <style>
-        #viz1733447245070 {
+          .main-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Take up full height of the viewport */
+        }
+
+        .tableau-container {
     width: 100%;
-    height: auto;
-    max-width: 100%;
+    height: 80vh; /* Use a percentage of the viewport height */
+    max-height: 1000px; /* Maximum height limit */
+    position: relative;
 }
 
     </style>
     <%- include('partials/adminHeader') %>
-    <section class="hero-section">
-        
-            
-            
-            <div class="tableau-card">
+    <div class="main-content">
+        <div class="tableau-container">
                 <div class='tableauPlaceholder' id='viz1733448600563' style='position: relative'>
                     <noscript><a href='#'>
                         <img alt='Event History ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;IN&#47;INTEX-Turtle-Shelter&#47;EventHistory&#47;1_rss.png' style='border: none' /></a></noscript>
@@ -55,8 +59,8 @@
                                     scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                
                             </script>
             </div>
-        
-    </section>
+    </div>    
+    
 
           <%- include('partials/adminFooter') %>
 
