@@ -187,12 +187,12 @@ footer {
             <h2>Admin LogIn</h2> 
             
             <br><br>
-            <% if (errorMessage) { %>
-                <div class="error-box">
-                    <p><%= errorMessage %></p>
-                </div>
-            <% } %>
             <form action="/login" method="POST" class="login-form">
+                <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+                    <div class="error-box">
+                        <p><%= errorMessage %></p>
+                    </div>
+                <% } %>
                 
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" placeholder="Enter your username" required>
