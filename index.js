@@ -46,7 +46,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-    res.render("login");
+    res.render('login', { errorMessage: null });
 });
 
 app.get("/adminLanding", isLoggedIn, (req, res) => {
@@ -88,8 +88,6 @@ app.get("/events", async (req, res) => {
 // this is for login function
 
 // for password hashing
-
-
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -97,12 +95,12 @@ app.post('/login', async (req, res) => {
         const staff = await knex('staff_login').where({ username }).first();
         
         if (!staff) {
-            return res.status(401).send('Invalid credentials');
+            return res.render('login', { errorMessage: 'Invalid username' });
         }
 
         // Directly compare the input password with the stored plain-text password
         if (password !== staff.password) {
-            return res.status(401).send('Invalid credentials');
+            return res.render('login', { errorMessage: 'Invalid password' });
         }
 
         // If password matches, set the session
@@ -115,6 +113,11 @@ app.post('/login', async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
+
+
+
+
 
 
 function isLoggedIn(req, res, next) {
